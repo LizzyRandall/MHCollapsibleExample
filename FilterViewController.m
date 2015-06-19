@@ -10,6 +10,22 @@
 
 @interface FilterViewController()
 
+@property (strong, nonatomic) NSMutableArray *managerArray;
+
+//used for picker and textfield type modals since they only take up half a page anyway
+@property (strong, nonatomic) UIView *modalOverlay;
+@property (nonatomic) CGFloat viewOverlayAlpha;
+
+//Keeping track of the current section gives the ability to get data and invoke actions from the FilterViewController
+@property (strong, nonatomic) MHCollapsibleSection *currentSection;
+@property (nonatomic) CRUCellViewInteractionType currentModalType;
+@property (nonatomic) NSIndexPath *currentRowPath;
+@property (nonatomic) NSUInteger currentSubViewControllerIndex;
+
+//After save button, this array is populated with MHPackagedFilter records
+//returned by each MHCollapsibleViewManager
+@property (nonatomic, strong) NSMutableArray *combinedFilters;
+
 @end
 
 @implementation FilterViewController
@@ -24,6 +40,28 @@
     //The example of this controller just has one view controller added as a sub
     //subclasses may have other view controllers so this is a variable instead of hardcoded
     self.currentSubViewControllerIndex = 0;
+    
+    self.managerArray = [[NSMutableArray alloc] init];
+}
+
+- (void)addFilters:(NSArray *)filters
+      headerTitles:(NSArray *)headerTitles
+ topHierarchyTitle:(NSString *)topHierarchyTitle {
+    MHCollapsibleViewManager *simpleFilter = [[MHCollapsibleViewManager alloc] initManagerWithAnimation:UITableViewRowAnimationMiddle
+                                                                                      topHierarchyTitle:topHierarchyTitle
+                                                                                              tableView:self.tableView];
+    [simpleFilter setDataWithFilterNames:filters
+                            headerTitles:headerTitles];
+    
+    simpleFilter.delegate = self;
+
+    [self.managerArray addObject:simpleFilter];
+
+    NSUInteger currentIndex = self.managerArray.count - 1;
+
+    [simpleFilter setTextIdentifierAndIndexWithSingleIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"Localizable", nil)
+                                         pluralIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"Localizable", nil) managerIndex:currentIndex];
+    
 }
 
 #pragma Set Modal and Manager Settings
