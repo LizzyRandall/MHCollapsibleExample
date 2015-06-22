@@ -55,6 +55,7 @@
     
     [super viewDidLoad];
     self.combinedFilters = [[NSMutableArray alloc] init];
+    self.managerArray = [[NSMutableArray alloc] init];
     self.managerCount = 0;
 }
 
@@ -69,6 +70,7 @@
     [simpleManager setFiltersWithFilterNames:filters headerTitles:headerTitles];
     [simpleManager setTextIdentifierAndIndexWithSingleIdentifier:singleIdentifier pluralIdentifier:pluralIdentifier managerIndex:self.managerCount];
     simpleManager.delegate = self;
+    self.managerCount++;
     [self.managerArray addObject:simpleManager];
 }
 
@@ -77,7 +79,7 @@
                                   rootSingleIdentifier:(NSString *)rootSingleIdentifier
                                   rootPluralIdentifier:(NSString *)rootPluralIdentifier{
     
-    MHCollapsibleViewManager *complexManager = self.managerArray[self.managerCount];
+    MHCollapsibleViewManager *complexManager = self.managerArray[self.managerCount-1];//offset 1 for index
     [complexManager setTextIdentifierForManagerWithSingleIdentifier:rootSingleIdentifier pluralIdentifier:rootPluralIdentifier];
     [complexManager setTitleWithString:topHierarchyTitle];
     
