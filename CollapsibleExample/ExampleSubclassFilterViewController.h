@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Lizzy Randall. All rights reserved.
 //
 
-#import "FilterViewController.h"
+#import "MHFilterViewController.h"
 
-@interface ExampleSubclassFilterViewController : FilterViewController
+@interface ExampleSubclassFilterViewController : MHFilterViewController
 
 @end

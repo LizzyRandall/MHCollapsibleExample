@@ -35,9 +35,11 @@
 
 - (void)createManagersAndPopulateData{
     
-    MHCollapsibleViewManager *labels = [[MHCollapsibleViewManager alloc] initManagerWithAnimation:UITableViewRowAnimationMiddle topHierarchyTitle:@"Labels"];
     
+    NSString *label = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"Localizable", nil);
+    NSString *labels = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"Localizable", nil);
     [labels setFilterArraysWithFirstArrayAsHeaderTitles:@[@"Labels"], self.returnLabelArray, nil];
+    [self addSimpleManagerWithFilters:self.returnLabelArray headerTitles:@[@"Labels"] singleIdentifier:<#(NSString *)#> pluralIdentifier:<#(NSString *)#>
     //sends double array for filternames and single array for header lines
     //[labels setDataWithFilterNames:self.returnLabelArray headerTitles:@[@"Labels"]];
     
@@ -70,7 +72,7 @@
     labels.delegate = self;
     surveys.delegate = self;
     interactions.delegate = self;
-    self.managerArray = [NSMutableArray arrayWithObjects:labels, surveys, interactions, nil];
+    //[self setManagerArrayWith:[NSMutableArray arrayWithObjects:labels, surveys, interactions, nil]];
     
     surveys = nil;
     labels = nil;
@@ -185,7 +187,7 @@
     
     [super buttonTapped:sender];
     
-    if(!self.modalCurrentlyShown && [sender.title isEqualToString:@"Save"]){
+    if(!self.isModalCurrentlyShown && [sender.title isEqualToString:@"Save"]){
         
         [self dismissViewControllerAnimated:YES completion:nil];
     }
