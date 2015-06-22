@@ -6,32 +6,86 @@
 //  Copyright (c) 2015 Lizzy Randall. All rights reserved.
 //
 
-#import "FilterViewController.h"
+#import "MHFilterViewController.h"
 
-@interface FilterViewController()
+@interface MHFilterViewController()
 
+@property (strong, nonatomic) NSMutableArray *managerArray;
+//Keeping track of the current section gives the ability to get data
+//and invoke actions from the filterviewcontroller
+@property (strong, nonatomic) MHCollapsibleSection *currentSection;
+@property (nonatomic) CRUCellViewInteractionType currentModalType;
+@property (nonatomic) NSIndexPath *currentRowPath;
+@property (nonatomic) NSUInteger currentSubViewControllerIndex;
+//Checked for Clear button since it appears on modals as well
+@property (nonatomic) BOOL modalCurrentlyShown;
+//After save button, this array is populated with MHPakcgaedFilter records
+//returned by each MHCollapsibleViewManager
+@property (nonatomic, strong) NSMutableArray *combinedFilters;
+@property (nonatomic) NSUInteger managerCount;
+
+//Modal interaction methods
+- (void)createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
+- (void)resignFirstResponderWithClearOption:(BOOL)clear;
 - (void)dismissCurrentModal;
 
+//Modal settings
+- (void)setButtonsAndColorWithController:(UIViewController*)viewController bgColor:(UIColor*)bgColor
+                                  cancel:(UIBarButtonItem*)cancel save:(UIBarButtonItem*)save clear:(UIBarButtonItem*)clear;
+
+//Handles clear, save and cancel for modals
+- (void)saveChangesForCurrentSection;
+- (void)cancelChangesForCurrentSection;
+- (void)clearChangesForCurrentSection;
+
+//Creating pieces for modals
+- (UILabel*)createLabelWithSection:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size;
 - (UITextField*)createTextFieldWithSection:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition;
+
+//Tableview delegate
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
-@implementation FilterViewController
+@implementation MHFilterViewController
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     self.combinedFilters = [[NSMutableArray alloc] init];
-    [self createManagersAndPopulateData];
+    self.managerCount = 0;
 }
 
 #pragma Manager Data
 
-//Instatiate and create managers in this method while also populating the data to give to managers
-//the end result should do the following: Managers in an array, each manager has a delegate of this controller
-// Methods to call: initManagerWithAnimation, setDataFilterNames, setSubtitleTextForSectionsWithString
-- (void)createManagersAndPopulateData{
+- (void)addSimpleManagerWithFilters:(NSArray*)filters
+                       headerTitles:(NSArray*)headerTitles
+                   singleIdentifier:(NSString*)singleIdentifier
+                   pluralIdentifier:(NSString*)pluralIdentifier{
     
+    MHCollapsibleViewManager *simpleManager = [[MHCollapsibleViewManager alloc] initManagerWithAnimation:UITableViewRowAnimationMiddle];
+    [simpleManager setFiltersWithFilterNames:filters headerTitles:headerTitles];
+    [simpleManager setTextIdentifierAndIndexWithSingleIdentifier:singleIdentifier pluralIdentifier:pluralIdentifier managerIndex:self.managerCount];
+    simpleManager.delegate = self;
+    [self.managerArray addObject:simpleManager];
+}
+
+
+- (void)setCurrentManagerSettingsWithTopHierarchyTitle:(NSString *)topHierarchyTitle
+                                  rootSingleIdentifier:(NSString *)rootSingleIdentifier
+                                  rootPluralIdentifier:(NSString *)rootPluralIdentifier{
+    
+    MHCollapsibleViewManager *complexManager = self.managerArray[self.managerCount];
+    [complexManager setTextIdentifierForManagerWithSingleIdentifier:rootSingleIdentifier pluralIdentifier:rootPluralIdentifier];
+    [complexManager setTitleWithString:topHierarchyTitle];
+    
+}
+
+- (NSUInteger)currentManagerIndex{
+    
+    return self.managerCount;
 }
 
 #pragma  Button Interaction for Modals
@@ -80,6 +134,11 @@
         self.presentedViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [self dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (BOOL)isModalCurrentlyShown{
+    
+    return self.modalCurrentlyShown;
 }
 
 #pragma Manager Delegate
@@ -197,17 +256,6 @@
     if(bgColor != nil){
         viewController.view.backgroundColor = bgColor;
     }
-}
-
-
-//Set for half modal types
-- (void)setSettingsForNavWithController:(UINavigationController*)navigationController cgSize:(CGSize)size offSet:(CGPoint)offset{
-    
-    NSUInteger height = size.height;
-    NSUInteger width = size.width;
-    
-    navigationController.toolbarHidden = YES;
-    navigationController.view.frame = CGRectMake(0, offset.y+height, width, height/2);
 }
 
 //Creates a UILabel for the actual label selected since the modal could cover up that selection
