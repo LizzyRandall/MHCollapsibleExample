@@ -53,7 +53,7 @@
 
 //Initialize with animation, title and tableView
 - (instancetype)initManagerWithAnimation:(UITableViewRowAnimation)animation
-                       topHierarchyTitle:(NSString*) title tableView:(UITableView*)tableView{
+                       topHierarchyTitle:(NSString*) title{
     
     self = [self init];
     if(self){
@@ -118,7 +118,7 @@
 
 //called after Initializing Manager
 //can take double array or single array depending if hierarchy
-- (void)setDataWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles {
+- (void)setFiltersWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles {
     
     __block NSUInteger start = 0;
     //used in loop to populate section array

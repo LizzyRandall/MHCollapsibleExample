@@ -10,6 +10,10 @@
 
 @interface FilterViewController()
 
+- (void)dismissCurrentModal;
+
+- (UITextField*)createTextFieldWithSection:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition;
+
 @end
 
 @implementation FilterViewController
@@ -18,34 +22,10 @@
     
     [super viewDidLoad];
     self.combinedFilters = [[NSMutableArray alloc] init];
-    [self setHalfModalViewLook];
-    //Notification is for half modals to orientate properly if device is rotated during the modal being shown
-    [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification  object:nil];
-    //The example of this controller just has one view controller added as a sub
-    //subclasses may have other view controllers so this is a variable instead of hardcoded
-    self.currentSubViewControllerIndex = 0;
+    [self createManagersAndPopulateData];
 }
 
-- (void)viewDidDisappear:(BOOL)animated{
-    
-    [super viewDidDisappear:animated];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
-}
-
-#pragma Set Modal and Manager Settings
-//Can be overwritten or added onto since the objects exist on the class
-//rather than in the method
-//modalOverlay is initialized and viewOverlayAlpha is set
-- (void)setHalfModalViewLook{
-    
-    self.viewOverlayAlpha = .4;
-    self.modalOverlay = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width)];
-    self.modalOverlay.alpha = 0;
-    self.modalOverlay.backgroundColor = [UIColor blackColor];
-    self.navigationController.toolbarHidden = NO;
-    self.modalCurrentlyShown = NO;
-}
+#pragma Manager Data
 
 //Instatiate and create managers in this method while also populating the data to give to managers
 //the end result should do the following: Managers in an array, each manager has a delegate of this controller
@@ -158,12 +138,12 @@
             picker.dataSource = section;
             
             UIViewController *pickerViewController = [[UIViewController alloc] init];
-            [self setButtonsAndColorWithController:pickerViewController bgColor:[UIColor whiteColor] cancel:cancel save:save clear:nil];
+            [self setButtonsAndColorWithController:pickerViewController bgColor:[UIColor whiteColor] cancel:cancel save:save clear:clear];
             [pickerViewController.view addSubview:picker];
             
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:pickerViewController];
-            [self setSettingsForNavWithController:navigationController cgSize:self.view.bounds.size offSet:self.tableView.contentOffset];
-            [self bringUpHalfModalWithController:navigationController cgSize:self.view.bounds.size offSet:self.tableView.contentOffset];
+            navigationController.toolbarHidden = NO;
+            [self presentViewController:navigationController animated:YES completion:nil];
             //keep the previously selected row in context so the user can see what they put before
             [picker selectRow:section.getCurrentFocusForPicker inComponent:0 animated:YES];
 
@@ -175,7 +155,9 @@
         case CRUCellViewInteractionTextBox:{
             
             UILabel *descriptionText = [self createLabelWithSection:section rowPath:rowPath cgSize:self.view.frame.size];
-            UITextField *textField = [self createTextFieldWithSection:section cgSize:self.view.frame.size];
+            NSUInteger yPositionForTextField = descriptionText.frame.size.height + descriptionText.frame.origin.y + 10;
+            //the textfield should be below the label, no matter how big the label is and 10 above is for padding
+            UITextField *textField = [self createTextFieldWithSection:section cgSize:self.view.frame.size yPosition:yPositionForTextField];
             
             UIViewController *textAreaController = [[UIViewController alloc] init];
             [self setButtonsAndColorWithController:textAreaController bgColor:[UIColor whiteColor] cancel:cancel save:save clear:clear];
@@ -235,22 +217,29 @@
     NSUInteger height = size.height;
     NSUInteger width = size.width;
     
-    UILabel *descriptionText = [[UILabel alloc] initWithFrame:CGRectMake(width/10, height/8, width-width/5, height/20)];
-    descriptionText.text = [section returnLabelNameAtRow:rowPath.row];
+    NSString *labelText = [section returnLabelNameAtRow:rowPath.row];
+    //default rect
+   CGRect labelFrame = CGRectMake(width/10, height/7, width-width/5, height/10);
+    
+    UILabel *descriptionText = [[UILabel alloc] initWithFrame:labelFrame];
+    descriptionText.text = labelText;
     descriptionText.textColor = [UIColor blackColor];
     descriptionText.numberOfLines = 0;
+    descriptionText.adjustsFontSizeToFitWidth = YES;
+    descriptionText.minimumScaleFactor = 8.0;
     descriptionText.lineBreakMode = NSLineBreakByWordWrapping;
+    [descriptionText sizeToFit];
     
     return descriptionText;
 }
 
 //Creates a textfield for the user to enter their filter label
-- (UITextField*)createTextFieldWithSection:(MHCollapsibleSection*)section cgSize:(CGSize)size{
+- (UITextField*)createTextFieldWithSection:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition{
     
     NSUInteger height = size.height;
     NSUInteger width = size.width;
     
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(width/10, height/6, width - width/5, height/20)];
+    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(width/10, yPosition, width - width/5, height/20)];
     NSString *previousText = section.getTextForTextArea;
     
     if([previousText isEqualToString:@""] || previousText == nil){
@@ -270,48 +259,6 @@
     return textField;
 }
 
-//Handles animation and sub controller to add a sub controller onto this modal
-//Creates a "Half-like" modal on the screen with the overlay
-- (void)bringUpHalfModalWithController:(UINavigationController*)navigationController cgSize:(CGSize)size offSet:(CGPoint)offset{
-    
-    NSUInteger height = size.height;
-    NSUInteger width = size.width;
-    
-    self.modalOverlay.alpha = 0;
-    
-    NSUInteger extendedHeight = height;
-    NSUInteger yCoordinate = offset.y;
-    
-    self.modalOverlay.frame = CGRectMake(offset.x, offset.y, width, extendedHeight);
-
-    [self.view addSubview:self.modalOverlay];
-    [self addChildViewController:navigationController];
-    [self.view addSubview:navigationController.view];
-    [UIView animateWithDuration:.2 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
-        navigationController.view.frame = CGRectMake(0, yCoordinate+height/2, width, height/2);
-        self.modalOverlay.alpha = self.viewOverlayAlpha;
-    }completion:^(BOOL finished){
-    }];
-    [navigationController didMoveToParentViewController:self];
-}
-
-//Removes the "half modal"
-- (void)removeHalfModalWithController:(UINavigationController*)navigationController cgSize:(CGSize)size offSet:(CGPoint)offset{
-    
-    NSUInteger height = size.height;
-    NSUInteger width = size.width;
-    
-    [UIView animateWithDuration:.2 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
-        navigationController.view.frame = CGRectMake(offset.x, offset.y+height, width, height/2);
-        self.modalOverlay.alpha = 0;
-    }completion:^(BOOL finished){
-        [self.modalOverlay removeFromSuperview];
-        [navigationController willMoveToParentViewController:nil];
-        [navigationController.view removeFromSuperview];
-        [navigationController removeFromParentViewController];
-    }];
-}
-
 //Saves the changes made by the user and handles refreshing
 //so the user can see the results on the filter label of what they selected
 - (void)saveChangesForCurrentSection{
@@ -324,20 +271,8 @@
         [self resignFirstResponderWithClearOption:NO];
     }
     
+    //section keeps changes
     [self.currentSection saveChanges];
-    
-    //since checklist type uses real modal
-    if(self.currentModalType != CRUCellViewInteractionCheckList && self.currentModalType != CRUCellViewInteractionTextBox){
-    
-        //currentSubViewControllerIndex is set as 0 by default in viewDidLoad
-        UINavigationController *navigationController = self.childViewControllers[self.currentSubViewControllerIndex];
-        [self removeHalfModalWithController:navigationController cgSize:self.view.bounds.size offSet:self.tableView.contentOffset];
-     
-    }
-    else{
-        self.presentedViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
     
     self.modalCurrentlyShown = NO;
     //Reload the modal row to show results
@@ -365,19 +300,10 @@
     
     [self.currentSection cancelChanges];
     
-    //since checklist type is a true modal
-    if(self.currentModalType != CRUCellViewInteractionCheckList && self.currentModalType != CRUCellViewInteractionTextBox){
+    //dismiss current modal
+    self.presentedViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self dismissViewControllerAnimated:YES completion:nil];
     
-        //currentSubViewControllerIndex is set as 0 by default in viewDidLoad
-        UINavigationController *navigationController = self.childViewControllers[self.currentSubViewControllerIndex];
-        [self removeHalfModalWithController:navigationController cgSize:self.view.frame.size offSet:self.tableView.contentOffset];
-
-    }
-    else{
-        
-        self.presentedViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
     self.modalCurrentlyShown = NO;
 }
 
@@ -399,7 +325,7 @@
     else if(self.currentModalType == CRUCellViewInteractionPicker){
         
         //currentSubViewControllerIndex set as 0 by default in viewdidload
-        UINavigationController *navigationController = (UINavigationController*)self.childViewControllers[self.currentSubViewControllerIndex];
+        UINavigationController *navigationController = (UINavigationController*)self.presentedViewController;
         UIViewController *pickerViewController = navigationController.topViewController;
         
         [pickerViewController.view.subviews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger index, BOOL *stop){
@@ -416,6 +342,14 @@
         [self resignFirstResponderWithClearOption:YES];
     }
     self.modalCurrentlyShown = NO;
+}
+
+//Subclass can override to change transition style
+- (void)dismissCurrentModal{
+    
+    //remove the modal view controller
+    self.presentedViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 //Resigns the keyboard so the save/cancel buttons can take control after
@@ -438,41 +372,6 @@
         }
     }];
     
-}
-
-//For the "half modal" the orientation could change while the modal is up
-//This recreates the frames for the overlay and the navigation controller
-//to make sure it will look proper
-- (void)orientationChanged:(NSNotification *)notification{
-    
-    if(self.modalCurrentlyShown && self.currentModalType != CRUCellViewInteractionCheckList){
-        
-        UINavigationController *navigationController = self.childViewControllers[self.currentSubViewControllerIndex];
-        UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-        NSUInteger width = self.view.frame.size.width;
-        NSUInteger height = self.view.frame.size.height;
-        CGPoint offset = self.tableView.contentOffset;
-        CGFloat rotation = 0;
-        switch (orientation)
-        {
-            case UIDeviceOrientationPortraitUpsideDown:
-                rotation = -M_PI;
-                break;
-            case UIDeviceOrientationLandscapeLeft:
-                rotation = M_PI_2;
-                break;
-            case UIDeviceOrientationLandscapeRight:
-                rotation = -M_PI_2;
-            default:
-                break;
-        }
-        
-        navigationController.view.frame = CGRectMake(offset.x, offset.y+height/2, width, height/2);
-        //just rotate modal since it doesn't have text or anything to fix
-        [self.modalOverlay setTransform:CGAffineTransformMakeRotation(rotation)];
-        //this is to fix the width/height of overlay after rotation
-        self.modalOverlay.frame = CGRectMake(offset.x, offset.y, width, height);
-    }
 }
 
 - (void)didReceiveMemoryWarning

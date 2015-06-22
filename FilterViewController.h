@@ -29,14 +29,10 @@
 @property (nonatomic, strong) NSMutableArray *combinedFilters;
 
 
-//Initial methods called in viewDidLoad
-- (void)setHalfModalViewLook;
 - (void)createManagersAndPopulateData;
 
 //Modal interaction methods
 - (void)createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
-- (void)bringUpHalfModalWithController:(UINavigationController*)navigationController cgSize:(CGSize)size offSet:(CGPoint)offset;
-- (void)removeHalfModalWithController:(UINavigationController*)navigationController cgSize:(CGSize)size offSet:(CGPoint)offset;
 - (void)resignFirstResponderWithClearOption:(BOOL)clear;
 - (IBAction)buttonTapped:(UIBarButtonItem*)sender; //modals and this viewcontroller call
 
@@ -52,7 +48,6 @@
 
 //Creating pieces for modals
 - (UILabel*)createLabelWithSection:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size;
-- (UITextField*)createTextFieldWithSection:(MHCollapsibleSection*)section cgSize:(CGSize)size;
 
 //Tableview delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
