@@ -334,6 +334,7 @@
     rootPath = [NSIndexPath indexPathForRow:0 inSection:self.currentSection.returnManagerIndex];
     [self.tableView reloadRowsAtIndexPaths:@[rootPath] withRowAnimation:UITableViewRowAnimationNone];
     rootPath = nil;
+    [self dismissCurrentModal];
 }
 
 //Dismisses the half modal or full modal
@@ -349,10 +350,7 @@
     }
     
     [self.currentSection cancelChanges];
-    
-    //dismiss current modal
-    self.presentedViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissCurrentModal];
     
     self.modalCurrentlyShown = NO;
 }
