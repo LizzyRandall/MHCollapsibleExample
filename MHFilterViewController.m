@@ -61,7 +61,7 @@
 
 #pragma Manager Data
 
-- (void)addSimpleManagerWithFilters:(NSArray*)filters
+- (void)addFilterManagerWithFilters:(NSArray*)filters
                        headerTitles:(NSArray*)headerTitles
                    singleIdentifier:(NSString*)singleIdentifier
                    pluralIdentifier:(NSString*)pluralIdentifier{
