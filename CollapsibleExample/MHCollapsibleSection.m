@@ -46,7 +46,7 @@ static const NSUInteger numOfSectionsForChecklist = 1;
         self.filterDataForSection = filters;
         self.headerTitle = headerTitle;
         self.filterDataRange = rowRange;
-        self.expanded = false;
+        self.expanded = NO;
     }
     return self;
 }
@@ -205,8 +205,13 @@ static const NSUInteger numOfSectionsForChecklist = 1;
     
     if(count < 1){
         count = self.itemCount;
-        if(count > 1){
+        //plural is needed for 0 items and # of items greater than 1
+        if(count == 0 || count > 1){
             itemTitle = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_defaultText_plural", @"Localizable", nil);
+        }
+        //only one item, don't need plural
+        else{
+            itemTitle = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_defaultText_single", @"Localizable", nil);
         }
     }
     
@@ -312,14 +317,21 @@ static const NSUInteger numOfSectionsForChecklist = 1;
     
     MHFilterLabel *label = [self.filterDataForSection objectAtIndex:self.currentModalIndex];
     [label setCurrentTextWithString:textField.text];
+    [textField resignFirstResponder];
     label = nil;
 }
-
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     
     return YES;
 }
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    
+    [textField resignFirstResponder];
+    return YES;
+}
+
 
 #pragma TableViewDelegate
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -424,7 +436,9 @@ static const NSUInteger numOfSectionsForChecklist = 1;
         if(label.selectedCell){
             [label toggleChecked];
         }
-        [label clearAndSaveChanges];
+        if(label.containsAtLeastOneSelected > 0){
+            [label clearAndSaveChanges];
+        }
     }];
 }
 

@@ -19,8 +19,8 @@
 //otherwise there is just one MHCollapsibleSection dictating itself
 @property (nonatomic) BOOL hierarchy;
 //Boolean keeps track if header has been clicked
-//expanded = true means children rows are shown
-//expanded = false means children rows are not shown
+//expanded = YES means children rows are shown
+//expanded = NO means children rows are not shown
 @property (nonatomic) BOOL expanded;
 
 - (void)toggleCollapse:(UITableView*)tableView indexPath:(NSIndexPath*)indexPath;
@@ -43,9 +43,9 @@
     self = [super init];
     if(self){
         self.filterSections = [NSMutableArray alloc];
-        self.hierarchy = false;
+        self.hierarchy = NO;
         self.headerTitle = @"";
-        self.expanded = false;
+        self.expanded = NO;
         self.rowAnimation = UITableViewRowAnimationFade;
     }
     return self;
@@ -58,7 +58,7 @@
     self = [self init];
     if(self){
         self.headerTitle = title;
-        self.hierarchy = false;
+        self.hierarchy = NO;
         self.rowAnimation = animation;
         self.filterSections = [self.filterSections init];
     }
@@ -66,6 +66,56 @@
 }
 
 #pragma Initial Settings
+
+- (void)setFilterArraysWithFirstArrayAsHeaderTitles:(NSArray*)firstArray, ... NS_REQUIRES_NIL_TERMINATION{
+    
+    NSArray *headerTitles = firstArray;
+    NSArray *filterArray = firstArray;
+    NSUInteger count = 0; //tells of hierarchy
+    MHCollapsibleSection *section;
+    NSUInteger filterCount =  0;
+    NSUInteger start = 1;
+    NSRange range;
+    
+    //Defaults to hierarchy, based on count that will change
+    self.hierarchy = YES;
+    self.expanded = NO;
+    
+    va_list arguments;
+    //va start makes firstArray skipped, the first argument in loop
+    //is actually the second argument, this is what is wanted
+    //since header titles is the firstArray
+    va_start(arguments, firstArray);
+
+    while((filterArray = va_arg(arguments, NSArray*))){
+        
+        filterCount = filterArray.count+1;//offset for section header row, length includes header
+        range = NSMakeRange(start, filterCount);
+        section = [MHCollapsibleSection alloc];
+        section = [section initWithArray:filterArray headerTitle:headerTitles[count] animation:self.rowAnimation rowRange:range];
+        [self.filterSections addObject:section];
+        start++;
+        count++;
+    }
+    va_end(arguments);
+    
+    //Only one array, this is not a hierarchy
+    //so the starting range needs to not be one off
+    //start is originally 1 for the manager's header
+    if(count < 2){
+        
+        start = 0;
+
+        //There should be only one section in this manager, but the loop is better to code for just in case
+        [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *loopSection, NSUInteger index, BOOL *stop){
+            [loopSection resetRangeWithNum:start];
+        }];
+        self.hierarchy = NO;
+        self.expanded = YES;
+    }
+
+}
+
 //called after Initializing Manager
 //can take double array or single array depending if hierarchy
 - (void)setDataWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles {
@@ -98,9 +148,9 @@
         //filterNames should have multiple arrays if it was a hierarchy
         //if just one, it's treated the same as a regular array, single MHCollapsibleSection
         if(filterCount > 1 && [[filterNames objectAtIndex:0] isKindOfClass: [NSArray class]]){
-            self.hierarchy = true;
+            self.hierarchy = YES;
             start += 1;
-            self.expanded = false;
+            self.expanded = NO;
         }
         
         if(headerTitles.count == filterCount){
@@ -295,7 +345,7 @@
     __block  NSString *cellText = nil;
     __block  NSString *detailText = nil;
     __block  NSUInteger indexRow = indexPath.row;
-    __block  BOOL collapsed = false;
+    __block  BOOL collapsed = NO;
     
     //handle Manager specifics
     if(self.hierarchy && indexRow == 0){
