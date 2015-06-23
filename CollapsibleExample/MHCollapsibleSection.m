@@ -372,7 +372,7 @@ static const NSUInteger numOfSectionsForChecklist = 1;
         MHFilterLabel *label = [self.filterDataForSection objectAtIndex:self.currentModalIndex];
         tableViewHeaderFooterView.textLabel.text = label.labelName;
         tableViewHeaderFooterView.textLabel.textColor = [UIColor blackColor];
-        tableViewHeaderFooterView.textLabel.font = [UIFont boldSystemFontOfSize:16];
+        tableViewHeaderFooterView.textLabel.font = [UIFont systemFontOfSize:16];
     }
 }
 

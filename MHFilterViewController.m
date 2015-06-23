@@ -287,11 +287,11 @@
     
     NSString *labelText = [section returnLabelNameAtRow:rowPath.row];
     //default rect
-   CGRect labelFrame = CGRectMake(width/25, height/7, width-width/15, height/10);
+   CGRect labelFrame = CGRectMake(width/22, height/6, width-width/15, height/10);
     
     UILabel *descriptionText = [[UILabel alloc] initWithFrame:labelFrame];
     descriptionText.text = labelText;
-    descriptionText.font = [UIFont boldSystemFontOfSize:16];
+    descriptionText.font = [UIFont systemFontOfSize:16];
     descriptionText.textColor = [UIColor blackColor];
     descriptionText.numberOfLines = 0;
     descriptionText.adjustsFontSizeToFitWidth = YES;
@@ -308,7 +308,7 @@
     NSUInteger height = size.height;
     NSUInteger width = size.width;
     
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(width/25, yPosition, width - width/15, height/15)];
+    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(width/22, yPosition, width - width/15, height/15)];
     NSString *previousText = section.getTextForTextArea;
     
     if([previousText isEqualToString:@""] || previousText == nil){
