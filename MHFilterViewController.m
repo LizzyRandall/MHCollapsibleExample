@@ -23,11 +23,11 @@
 //returned by each MHCollapsibleViewManager
 @property (nonatomic, strong) NSMutableArray *combinedFilters;
 @property (nonatomic) NSUInteger managerCount;
+@property (nonatomic) UIColor *modalBackgroundColor;
 
 //Modal interaction methods
 - (void)createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
 - (void)resignFirstResponderWithClearOption:(BOOL)clear;
-- (void)dismissCurrentModal;
 
 //Modal settings
 - (void)setButtonsAndColorWithController:(UIViewController*)viewController bgColor:(UIColor*)bgColor
@@ -57,6 +57,7 @@
     self.combinedFilters = [[NSMutableArray alloc] init];
     self.managerArray = [[NSMutableArray alloc] init];
     self.managerCount = 0;
+    [self setModalBackgroundColorWithColor:self.tableView.backgroundColor];
 }
 
 #pragma Manager Data
@@ -83,6 +84,21 @@
     [complexManager setTextIdentifierForManagerWithSingleIdentifier:rootSingleIdentifier pluralIdentifier:rootPluralIdentifier];
     [complexManager setTitleWithString:topHierarchyTitle];
     
+}
+
+- (void)setModalBackgroundColorWithColor:(UIColor *)modalBackgroundColor{
+    
+    self.modalBackgroundColor = modalBackgroundColor;
+}
+
+- (MHCollapsibleViewManager*)getManagerAtIndex:(NSUInteger)index{
+    
+    return self.managerArray[index];
+}
+
+- (MHCollapsibleSection*)getCurrentCollapsibleSection{
+    
+    return self.currentSection;
 }
 
 - (NSUInteger)currentManagerIndex{
@@ -170,7 +186,6 @@
         case CRUCellViewInteractionCheckList:{
             
             UITableViewController *tableViewController = [[UITableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-            
             //section will delegate displaying cell selects, etc.
             //and what data will be shown
             tableViewController.tableView.delegate = section;
@@ -199,7 +214,7 @@
             picker.dataSource = section;
             
             UIViewController *pickerViewController = [[UIViewController alloc] init];
-            [self setButtonsAndColorWithController:pickerViewController bgColor:[UIColor whiteColor] cancel:cancel save:save clear:clear];
+            [self setButtonsAndColorWithController:pickerViewController bgColor:nil cancel:cancel save:save clear:clear];
             [pickerViewController.view addSubview:picker];
             
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:pickerViewController];
@@ -219,13 +234,13 @@
             NSUInteger yPositionForTextField = descriptionText.frame.size.height + descriptionText.frame.origin.y + 10;
             //the textfield should be below the label, no matter how big the label is and 10 above is for padding
             UITextField *textField = [self createTextFieldWithSection:section cgSize:self.view.frame.size yPosition:yPositionForTextField];
+            textField.backgroundColor = [UIColor whiteColor];
             
             UIViewController *textAreaController = [[UIViewController alloc] init];
-            [self setButtonsAndColorWithController:textAreaController bgColor:[UIColor whiteColor] cancel:cancel save:save clear:clear];
+            [self setButtonsAndColorWithController:textAreaController bgColor:nil cancel:cancel save:save clear:clear];
             
             [textAreaController.view addSubview:descriptionText];
             [textAreaController.view addSubview:textField];
-            
             
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:textAreaController];
             navigationController.toolbarHidden = NO;
@@ -258,6 +273,9 @@
     if(bgColor != nil){
         viewController.view.backgroundColor = bgColor;
     }
+    else{
+        viewController.view.backgroundColor = self.modalBackgroundColor;
+    }
 }
 
 //Creates a UILabel for the actual label selected since the modal could cover up that selection
@@ -269,10 +287,11 @@
     
     NSString *labelText = [section returnLabelNameAtRow:rowPath.row];
     //default rect
-   CGRect labelFrame = CGRectMake(width/10, height/7, width-width/5, height/10);
+   CGRect labelFrame = CGRectMake(width/25, height/7, width-width/15, height/10);
     
     UILabel *descriptionText = [[UILabel alloc] initWithFrame:labelFrame];
     descriptionText.text = labelText;
+    descriptionText.font = [UIFont boldSystemFontOfSize:16];
     descriptionText.textColor = [UIColor blackColor];
     descriptionText.numberOfLines = 0;
     descriptionText.adjustsFontSizeToFitWidth = YES;
@@ -289,7 +308,7 @@
     NSUInteger height = size.height;
     NSUInteger width = size.width;
     
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(width/10, yPosition, width - width/5, height/20)];
+    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(width/25, yPosition, width - width/15, height/15)];
     NSString *previousText = section.getTextForTextArea;
     
     if([previousText isEqualToString:@""] || previousText == nil){
@@ -300,6 +319,7 @@
     }
     
     textField.borderStyle = UITextBorderStyleLine;
+    textField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     textField.delegate = section;
     textField.returnKeyType = UIReturnKeyDone;
     textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;

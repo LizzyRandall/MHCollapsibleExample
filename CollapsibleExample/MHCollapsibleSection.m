@@ -365,6 +365,17 @@ static const NSUInteger numOfSectionsForChecklist = 1;
     return description;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    if([view isKindOfClass:[UITableViewHeaderFooterView class]]){
+        UITableViewHeaderFooterView *tableViewHeaderFooterView = (UITableViewHeaderFooterView *) view;
+        MHFilterLabel *label = [self.filterDataForSection objectAtIndex:self.currentModalIndex];
+        tableViewHeaderFooterView.textLabel.text = label.labelName;
+        tableViewHeaderFooterView.textLabel.textColor = [UIColor blackColor];
+        tableViewHeaderFooterView.textLabel.font = [UIFont boldSystemFontOfSize:16];
+    }
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     
     //static variable set at top
