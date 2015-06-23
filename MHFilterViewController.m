@@ -325,7 +325,7 @@
     textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     textField.keyboardType = UIKeyboardAppearanceDefault;
     //important to give responder
-    [textField canBecomeFirstResponder];
+    [textField becomeFirstResponder];
     return textField;
 }
 
