@@ -27,7 +27,6 @@
 @property (nonatomic, strong) NSString *stringsFileName;
 
 //Modal interaction methods
-- (void)createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
 - (void)resignFirstResponderWithClearOption:(BOOL)clear;
 
 //Modal settings
@@ -175,7 +174,7 @@
 
 #pragma Manager Delegate
 //Handles creation of modal or pretend half modal that shows the type of uiview applicable
-- (void)createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath{
+- (void)selectedCellWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath{
     
     self.currentSection = section;
     self.currentModalType = cellType;

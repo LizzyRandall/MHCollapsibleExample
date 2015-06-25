@@ -233,11 +233,19 @@
     }
     [cell setCellViewInteractionWithType:type];
     switch (type) {
-        case CRUCellViewInteractionTextBox:
-        case CRUCellViewInteractionPicker:
-        case CRUCellViewInteractionCheckList:{
-            [cell changeCellStateWithToggle:checked];
-        }
+        case CRUCellViewInteractionCheckToggle:
+            if(checked){
+                [cell setCellClickedWithAccessory:UITableViewCellAccessoryCheckmark
+                                            style:UITableViewCellSelectionStyleDefault
+                                       labelColor:[UIColor blackColor] accessoryView:nil];
+                [cell changeCellStateWithToggle:checked];
+            }
+            else{
+                [cell setCellDefaultsWithAccessory:UITableViewCellAccessoryNone
+                                             style:UITableViewCellSelectionStyleNone
+                                        labelColor:[UIColor blackColor] accessoryView:nil];
+                [cell changeCellStateWithToggle:checked];
+            }
             break;
         case CRUCellViewInteractionHeader:{
             if(checked){
@@ -253,21 +261,9 @@
             [cell changeCellStateWithToggle:checked];
         }
             break;
-        default:{
-            if(checked){
-                [cell setCellClickedWithAccessory:UITableViewCellAccessoryCheckmark
-                                              style:UITableViewCellSelectionStyleDefault
-                                         labelColor:[UIColor blackColor] accessoryView:nil];
-                [cell changeCellStateWithToggle:checked];
-            }
-            else{
-                [cell setCellDefaultsWithAccessory:UITableViewCellAccessoryNone
-                                               style:UITableViewCellSelectionStyleNone
-                                          labelColor:[UIColor blackColor] accessoryView:nil];
-                [cell changeCellStateWithToggle:checked];
-            }
-            
-        }
+        default:
+            [cell changeCellStateWithToggle:checked];
+            break;
     }
     return cell;
 }
@@ -365,29 +361,9 @@
     else{
         
         switch (type) {
-            //modal types
-            case CRUCellViewInteractionPicker:
-            case CRUCellViewInteractionCheckList:
-            case CRUCellViewInteractionTextBox:
-            {
-                [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *section, NSUInteger index, BOOL *stop){
-                    
-                    if(section.returnExpanded && [section rowNumInRange:indexRow]){
-                        //NOTE: this flips the expanded boolean and then returns it
-                        BOOL check = [section toggleCheckAndReturnWithIndex:indexRow];
-                        [cell changeCellStateWithToggle:check];
-                        [section setCurrentModalIndexWithRow:indexRow];
-                        //call delegate to create modal for checklist
-                        //section should delegate views/data on modal
-                        [self.delegate createModalWithType:type section:section rowPath:indexPath];
-                        *stop = YES;//kick out since we found the row
-                    }
-                }];
-            }
-            break;
-            
-            //Header and Toggle types (non modal)
-            default:
+                
+            case CRUCellViewInteractionHeader:
+            case CRUCellViewInteractionCheckToggle:
             {
                 [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *section, NSUInteger index, BOOL *stop){
                     //toggle the header in collapsed state or expanded state
@@ -415,6 +391,27 @@
                 }];
             }
                 break;
+            //modal types
+            default:
+            {
+                [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *section, NSUInteger index, BOOL *stop){
+                    
+                    if(section.returnExpanded && [section rowNumInRange:indexRow]){
+                        //NOTE: this flips the expanded boolean and then returns it
+                        BOOL check = [section toggleCheckAndReturnWithIndex:indexRow];
+                        [cell changeCellStateWithToggle:check];
+                        [section setCurrentModalIndexWithRow:indexRow];
+                        //call delegate to create modal for checklist
+                        //section should delegate views/data on modal
+                        [self.delegate selectedCellWithType:type section:section rowPath:indexPath];
+                        *stop = YES;//kick out since we found the row
+                    }
+                }];
+            }
+            break;
+            
+            //Header and Toggle types (non modal)
+        
         }//end switch
     }
     //Notify the view controller to invoke specific modal based on type

@@ -24,7 +24,7 @@
 
 @required
 
-- (void) createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath;
+- (void)selectedCellWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath;
 
 @end
 

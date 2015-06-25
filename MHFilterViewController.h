@@ -39,8 +39,10 @@
 
 //Advanced methods to customize and rework code
 //only for use based on extensive knowledge of class
+- (void)selectedCellWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
 - (MHCollapsibleViewManager*)getManagerAtIndex:(NSUInteger)index;
 - (MHCollapsibleSection*)getCurrentCollapsibleSection;
 - (void)setStringsFileNameWithName:(NSString*)name;
+
 
 @end
