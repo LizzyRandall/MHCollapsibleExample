@@ -13,6 +13,7 @@
 @property (strong, nonatomic) NSString *headerTitle;
 @property (strong, nonatomic) NSString *singleIdentifier;
 @property (strong, nonatomic) NSString *pluralIdentifier;
+@property (strong, nonatomic) NSString *stringFileName;
 @property (strong, nonatomic) NSMutableArray *filterSections;
 @property (nonatomic) UITableViewRowAnimation rowAnimation;
 //hierarchy determines if Manager will be collapsible itself
@@ -60,6 +61,7 @@
         self.hierarchy = NO;
         self.rowAnimation = animation;
         self.filterSections = [self.filterSections init];
+        self.stringFileName = @"MHCollapsibleManagerStrings";
     }
     return self;
 }
@@ -143,6 +145,18 @@
     self.pluralIdentifier = pluralIdentifier;
 }
 
+- (void)setStringFileNameWith:(NSString *)stringFileName{
+    
+    if(stringFileName != nil && ![stringFileName isEqualToString:@""]){
+        
+        self.stringFileName = stringFileName;
+        
+        [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *section, NSUInteger index, BOOL *stop){
+            
+            [section setStringFileNameWith:stringFileName];
+        }];
+    }
+}
 
 #pragma Get Information on the Manager
 
@@ -277,13 +291,13 @@
     NSString *itemTitle = self.getIdentifier;
     
     if(itemTitle == nil){
-        itemTitle = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_defaultText_single", @"Localizable", nil);
+        itemTitle = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_CellHeader_defaultText_single", self.stringFileName, nil);
     }
     
     if(count < 1){
         count = self.filterSections.count;
         if(count > 1){
-            itemTitle = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_defaultText_plural", @"Localizable", nil);
+            itemTitle = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_CellHeader_defaultText_plural", self.stringFileName, nil);
         }
     }
     detailedText = [NSString stringWithFormat:NSLocalizedString(itemTitle,nil), count];

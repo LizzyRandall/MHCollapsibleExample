@@ -41,5 +41,6 @@
 //only for use based on extensive knowledge of class
 - (MHCollapsibleViewManager*)getManagerAtIndex:(NSUInteger)index;
 - (MHCollapsibleSection*)getCurrentCollapsibleSection;
+- (void)setStringsFileNameWithName:(NSString*)name;
 
 @end

@@ -24,6 +24,7 @@
 @property (nonatomic, strong) NSMutableArray *combinedFilters;
 @property (nonatomic) NSUInteger managerCount;
 @property (nonatomic) UIColor *modalBackgroundColor;
+@property (nonatomic, strong) NSString *stringsFileName;
 
 //Modal interaction methods
 - (void)createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
@@ -60,6 +61,7 @@
     self.managerArray = [[NSMutableArray alloc] init];
     self.managerCount = 0;
     [self setModalBackgroundColorWithColor:self.tableView.backgroundColor];
+    self.stringsFileName = @"MHCollapsibleManagerStrings";
 }
 
 #pragma Manager Data
@@ -93,6 +95,11 @@
     self.modalBackgroundColor = modalBackgroundColor;
 }
 
+- (void)setStringsFileNameWithName:(NSString*)name{
+    
+    self.stringsFileName = name;
+}
+
 - (MHCollapsibleViewManager*)getManagerAtIndex:(NSUInteger)index{
     
     return self.managerArray[index];
@@ -113,7 +120,12 @@
 //While the save and cancel checked here are on the filterviewcontroller itself
 - (IBAction)buttonTapped:(UIBarButtonItem*)sender{
     
-    if([sender.title isEqualToString: @"Clear"]){
+    
+    NSString *saveString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultSave", self.stringsFileName, nil);
+    NSString *cancelString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultCancel", self.stringsFileName, nil);
+    NSString *clearString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultClear", self.stringsFileName, nil);
+    
+    if([sender.title isEqualToString: clearString]){
         
         if(self.modalCurrentlyShown){
             //clear just shown on modal, the temp storage
@@ -131,7 +143,7 @@
             [self.tableView reloadData];
         }
     }
-    else if ([sender.title isEqualToString: @"Save"] && !self.modalCurrentlyShown){
+    else if ([sender.title isEqualToString: saveString] && !self.modalCurrentlyShown){
         
         //Loop through the managers and get a MHPackagedFilter for each
         //these are concatonated. MHPackagedFilter contains key/value pairs and can have a hierarchy
@@ -148,7 +160,7 @@
         //For a subclass, just call super on this class and then handle the combinedFilters array accordingly
         
     }
-    else if([sender.title isEqualToString:@"Cancel"] && !self.modalCurrentlyShown){
+    else if([sender.title isEqualToString:cancelString] && !self.modalCurrentlyShown){
         
         //dismiss modal, nothing needs to be sent to the search view controller or wherever the filter gets sent
         self.presentedViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
@@ -174,13 +186,17 @@
     [self.tableView setBounces:NO];
     self.tableView.scrollEnabled = NO;
     
+    NSString *saveString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultSave", self.stringsFileName, nil);
+    NSString *cancelString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultCancel", self.stringsFileName, nil);
+    NSString *clearString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultClear", self.stringsFileName, nil);
+    
     //Not all will need these buttons but most will have them in common
-    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithTitle:saveString
                                                             style:UIBarButtonItemStylePlain target:self action:@selector(saveChangesForCurrentSection)];
-    UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+    UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:cancelString
                                                                style:UIBarButtonItemStylePlain target:self action:@selector(cancelChangesForCurrentSection)];
     
-    UIBarButtonItem *clear = [[UIBarButtonItem alloc] initWithTitle:@"Clear"
+    UIBarButtonItem *clear = [[UIBarButtonItem alloc] initWithTitle:clearString
                                                                style:UIBarButtonItemStylePlain target:self action:@selector(clearChangesForCurrentSection)];
     
     switch (cellType) {

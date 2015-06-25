@@ -53,6 +53,8 @@
 //If this is not set, the manager will use the sections identifier combo above
 - (void)setTextIdentifierForManagerWithSingleIdentifier:(NSString *)singleIdentifier pluralIdentifier:(NSString*)pluralIdentifier;
 
+- (void)setStringFileNameWith:(NSString *)stringFileName;
+
 //RETURN METHODS
 
 - (MHTableViewCell*)returnCellWithIndex:(NSIndexPath*)indexPath tableView:(UITableView*)tableView;

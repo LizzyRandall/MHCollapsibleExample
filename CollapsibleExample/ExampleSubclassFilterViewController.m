@@ -36,15 +36,15 @@
 - (void)createManagersAndPopulateData{
     
     
-    NSString *label = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"Localizable", nil);
-    NSString *labels = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"Localizable", nil);
+    NSString *label = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"ExampleStringsFile", nil);
+    NSString *labels = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"ExampleStringsFile", nil);
     [self addFilterManagerWithFilters:self.returnLabelArray headerTitles:@[@"Labels"] singleIdentifier:label pluralIdentifier:labels];
     
-    NSString *surveyQuestion = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_single", @"Localizable", nil);
-    NSString *surveyQuestions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_plural", @"Localizable", nil);
+    NSString *surveyQuestion = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_single", @"ExampleStringsFile", nil);
+    NSString *surveyQuestions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_plural", @"ExampleStringsFile", nil);
     
-    NSString *survey = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_single", @"Localizable", nil);
-    NSString *surveys = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_plural", @"Localizable", nil);
+    NSString *survey = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_single", @"ExampleStringsFile", nil);
+    NSString *surveys = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_plural", @"ExampleStringsFile", nil);
     
     [self addFilterManagerWithFilters:@[self.returnGuestbookArray, self.returnEngelsScaleArray, self.returnInternationalStudentsArray]
                          headerTitles:@[@"Bridges@UCF Guestbook", @"Engels Scale", @"International Students"]
@@ -54,8 +54,8 @@
     [self setCurrentManagerSettingsWithTopHierarchyTitle:@"Surveys" rootSingleIdentifier:survey rootPluralIdentifier:surveys];
 
 
-    NSString *interaction = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_single", @"Localizable", nil);
-    NSString *interactions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_plural", @"Localizable", nil);
+    NSString *interaction = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_single", @"ExampleStringsFile", nil);
+    NSString *interactions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_plural", @"ExampleStringsFile", nil);
     
     [self addFilterManagerWithFilters:self.returnInteractionsArray headerTitles:@[@"Interactions"] singleIdentifier:interaction pluralIdentifier:interactions];
 
@@ -72,7 +72,7 @@
 - (NSArray*)returnInternationalStudentsArray{
     
     NSArray *filterData;
-    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"Localizable", nil);
+    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"ExampleStringsFile", nil);
     
     MHFilterLabel *checkListLabel = [[MHFilterLabel alloc] initLabelWithName:@"English Name" checked:NO interactionType:CRUCellViewInteractionTextBox];
     [checkListLabel setPlaceHolderTextWithString:placeHolderText];
@@ -117,7 +117,7 @@
 
 - (NSArray*)returnGuestbookArray{
     
-    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"Localizable", nil);
+    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"ExampleStringsFile", nil);
     
     MHFilterLabel *checkListLabel = [[MHFilterLabel alloc] initLabelWithName:@"What is your email address?" checked:NO interactionType:CRUCellViewInteractionTextBox];
     [checkListLabel setPlaceHolderTextWithString:placeHolderText];

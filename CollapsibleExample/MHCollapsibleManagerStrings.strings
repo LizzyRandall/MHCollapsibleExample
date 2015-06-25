@@ -1,0 +1,14 @@
+/* 
+  MHCollapsibleManagerStrings.strings
+  CollapsibleExample
+
+  Created by Lizzy Randall on 6/25/15.
+  Copyright (c) 2015 Lizzy Randall. All rights reserved.
+*/
+/*Default Manger Strings, to override put another strings file of same name or pass in override method*/
+"MHCollapsibleViewManager_Interaction_CellHeader_defaultText_single" = "%i item";
+"MHCollapsibleViewManager_Interaction_CellHeader_defaultText_plural" = "%i items";
+
+"MHCollapsibleViewManager_Interaction_Button_defaultCancel" = "Cancel";
+"MHCollapsibleViewManager_Interaction_Button_defaultSave" = "Save";
+"MHCollapsibleViewManager_Interaction_Button_defaultClear" = "Clear";

@@ -36,6 +36,8 @@
 //Sets the current modal index to keep track of what the modal belongs to
 - (void)setCurrentModalIndexWithRow:(NSUInteger)row;
 
+- (void)setStringFileNameWith:(NSString *)stringFileName;
+
 #pragma Section Specifics
 
 - (NSUInteger)returnManagerIndex;
