@@ -39,8 +39,10 @@
 - (void)clearChangesForCurrentSection;
 
 //Creating pieces for modals
-- (UILabel*)createLabelWithSection:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size;
-- (UITextField*)createTextFieldWithSection:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition;
+- (void)setLabelSettingsWithLabel:(UILabel*)label section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size;
+- (void)setTextFieldSettingsWithField: (UITextField*)textField section:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition;
+
+- (NSUInteger)yPositionForTextFieldBasedOnLabel:(UILabel*)label;
 
 //Tableview delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
@@ -230,10 +232,13 @@
             
         case CRUCellViewInteractionTextBox:{
             
-            UILabel *descriptionText = [self createLabelWithSection:section rowPath:rowPath cgSize:self.view.frame.size];
-            NSUInteger yPositionForTextField = descriptionText.frame.size.height + descriptionText.frame.origin.y + 10;
+            UILabel *descriptionText = [[UILabel alloc] init];
+            [self setLabelSettingsWithLabel:descriptionText section:section rowPath:rowPath cgSize:self.view.frame.size];
+            
+            NSUInteger yPositionForTextField = [self yPositionForTextFieldBasedOnLabel:descriptionText];
             //the textfield should be below the label, no matter how big the label is and 10 above is for padding
-            UITextField *textField = [self createTextFieldWithSection:section cgSize:self.view.frame.size yPosition:yPositionForTextField];
+            UITextField *textField = [[UITextField alloc]init];
+            [self setTextFieldSettingsWithField:textField section:section cgSize:self.view.frame.size yPosition:yPositionForTextField];
             textField.backgroundColor = [UIColor whiteColor];
             
             UIViewController *textAreaController = [[UIViewController alloc] init];
@@ -245,6 +250,9 @@
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:textAreaController];
             navigationController.toolbarHidden = NO;
             [self presentViewController:navigationController animated:YES completion:nil];
+            
+            //Notification is for half modals to orientate properly if device is rotated during the modal being shown
+            [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification  object:nil];
             
             navigationController = nil;
             textAreaController = nil;
@@ -280,35 +288,32 @@
 
 //Creates a UILabel for the actual label selected since the modal could cover up that selection
 //and the user doesn't have to remember which one they selected this way
-- (UILabel*)createLabelWithSection:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size{
+- (void)setLabelSettingsWithLabel:(UILabel*)label section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size{
     
     NSUInteger height = size.height;
     NSUInteger width = size.width;
     
     NSString *labelText = [section returnLabelNameAtRow:rowPath.row];
-    //default rect
    CGRect labelFrame = CGRectMake(width/22, height/6, width-width/15, height/10);
     
-    UILabel *descriptionText = [[UILabel alloc] initWithFrame:labelFrame];
-    descriptionText.text = labelText;
-    descriptionText.font = [UIFont systemFontOfSize:16];
-    descriptionText.textColor = [UIColor blackColor];
-    descriptionText.numberOfLines = 0;
-    descriptionText.adjustsFontSizeToFitWidth = YES;
-    descriptionText.minimumScaleFactor = 8.0;
-    descriptionText.lineBreakMode = NSLineBreakByWordWrapping;
-    [descriptionText sizeToFit];
-    
-    return descriptionText;
+    label.text = labelText;
+    label.frame = labelFrame;
+    label.font = [UIFont systemFontOfSize:16];
+    label.textColor = [UIColor blackColor];
+    label.numberOfLines = 0;
+    label.adjustsFontSizeToFitWidth = YES;
+    label.minimumScaleFactor = 8.0;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    [label sizeToFit];
 }
 
+
 //Creates a textfield for the user to enter their filter label
-- (UITextField*)createTextFieldWithSection:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition{
+- (void)setTextFieldSettingsWithField: (UITextField*)textField section:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition{
     
     NSUInteger height = size.height;
     NSUInteger width = size.width;
     
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(width/22, yPosition, width - width/15, height/15)];
     NSString *previousText = section.getTextForTextArea;
     
     if([previousText isEqualToString:@""] || previousText == nil){
@@ -318,6 +323,7 @@
         textField.text = previousText;
     }
     
+    textField.frame = CGRectMake(width/22, yPosition, width - width/15, height/15);
     textField.borderStyle = UITextBorderStyleLine;
     textField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     textField.delegate = section;
@@ -326,9 +332,13 @@
     textField.keyboardType = UIKeyboardAppearanceDefault;
     //important to give responder
     [textField becomeFirstResponder];
-    return textField;
 }
 
+
+- (NSUInteger)yPositionForTextFieldBasedOnLabel:(UILabel*)label{
+    
+    return label.frame.size.height + label.frame.origin.y + 10;
+}
 //Saves the changes made by the user and handles refreshing
 //so the user can see the results on the filter label of what they selected
 - (void)saveChangesForCurrentSection{
@@ -339,6 +349,7 @@
     if(self.currentModalType == CRUCellViewInteractionTextBox){
         
         [self resignFirstResponderWithClearOption:NO];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     
     //section keeps changes
@@ -367,6 +378,8 @@
     if(self.currentModalType == CRUCellViewInteractionTextBox){
         
         [self resignFirstResponderWithClearOption:NO];
+        //remove observing for device orientation
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     
     [self.currentSection cancelChanges];
@@ -440,6 +453,38 @@
         }
     }];
     
+}
+
+//The orientation changing is handled by the tableviewcontroller modal but for the uiviewcontroller
+//with the text field/label, the text field and label need to adjust to the rotation
+//so the sub views are traversed and the label settings are reset
+- (void)orientationChanged:(NSNotification *)notification{
+    
+    if(self.modalCurrentlyShown && self.currentModalType == CRUCellViewInteractionTextBox){
+        
+        UINavigationController *navigationController = (UINavigationController*)self.presentedViewController;
+        UIViewController *textFieldController = navigationController.topViewController;
+        
+        __block NSUInteger yPositionBasedOnLabelLocation = 0;
+        
+        [textFieldController.view.subviews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger index, BOOL *stop){
+            
+            if([view isKindOfClass:[UILabel class]]){
+                
+                UILabel *label = (UILabel*)view;
+                
+                [self setLabelSettingsWithLabel:label section: self.currentSection rowPath:self.currentRowPath cgSize:navigationController.view.frame.size];
+                yPositionBasedOnLabelLocation = [self yPositionForTextFieldBasedOnLabel:label];
+                
+            }
+            else if([view isKindOfClass:[UITextField class]]){
+                
+                UITextField *textField = (UITextField*)view;
+                [self setTextFieldSettingsWithField:textField section:self.currentSection cgSize:navigationController.view.frame.size yPosition:yPositionBasedOnLabelLocation];
+            }
+          
+        }];
+    }
 }
 
 - (void)didReceiveMemoryWarning
