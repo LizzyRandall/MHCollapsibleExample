@@ -99,21 +99,6 @@
     self.stringsFileName = name;
 }
 
-- (MHCollapsibleViewManager*)getManagerAtIndex:(NSUInteger)index{
-    
-    return self.managerArray[index];
-}
-
-- (MHCollapsibleSection*)getCurrentCollapsibleSection{
-    
-    return self.currentSection;
-}
-
-- (NSUInteger)currentManagerIndex{
-    
-    return self.managerCount;
-}
-
 #pragma  Button Interaction for Modals
 //Save and Cancel are actually on the temporary modals
 //While the save and cancel checked here are on the filterviewcontroller itself
