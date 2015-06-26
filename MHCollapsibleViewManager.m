@@ -270,14 +270,7 @@
 
 - (NSString*)getIdentifier{
     
-    NSString *identifier;
-    if(self.numOfSelectedRowsForText > 1){
-        identifier = self.pluralIdentifier;
-    }
-    else{
-        identifier = self.singleIdentifier;
-    }
-    return identifier;
+    return self.numOfSelectedRowsForText > 1 ? self.pluralIdentifier : self.singleIdentifier;
 }
 
 - (NSString*)returnDetailText{
@@ -362,6 +355,7 @@
         
         switch (type) {
                 
+            //Header and Toggle types (non modal)
             case CRUCellViewInteractionHeader:
             case CRUCellViewInteractionCheckToggle:
             {
@@ -389,8 +383,8 @@
                         *stop = YES;//kick out since we found the row
                     }
                 }];
-            }
                 break;
+            }
             //modal types
             default:
             {
@@ -407,10 +401,8 @@
                         *stop = YES;//kick out since we found the row
                     }
                 }];
+                break;
             }
-            break;
-            
-            //Header and Toggle types (non modal)
         
         }//end switch
     }

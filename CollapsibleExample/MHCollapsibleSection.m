@@ -136,14 +136,7 @@ static const NSUInteger numOfSectionsForChecklist = 1;
 
 - (NSString*)getIdentifier{
     
-    NSString *identifier;
-    if(self.selectedCountForSubTitleText > 1){
-        identifier = self.pluralIdentifier;
-    }
-    else{
-        identifier = self.singleIdentifier;
-    }
-    return identifier;
+    return self.selectedCountForSubTitleText > 1 ? self.pluralIdentifier : self.singleIdentifier;
 }
 
 - (void)toggleExpanded{

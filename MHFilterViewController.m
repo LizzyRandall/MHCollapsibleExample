@@ -204,9 +204,8 @@
             
             navigationController = nil;
             tableViewController = nil;
-            
-        }
             break;
+        }
             
         case CRUCellViewInteractionPicker:{
             
@@ -227,8 +226,8 @@
 
             navigationController = nil;
             pickerViewController = nil;
-        }
             break;
+        }
             
         case CRUCellViewInteractionTextBox:{
             
@@ -256,6 +255,7 @@
             
             navigationController = nil;
             textAreaController = nil;
+            break;
         }
             
         default:
