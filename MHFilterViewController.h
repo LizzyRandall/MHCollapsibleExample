@@ -15,11 +15,13 @@
 
 //filters can be an array of arrays (if hierarchy collapsing)
 //headerTitles is an array of strings for those collapsing sections (non hierarchy or hierarchy)
+//headerIds is an array of unique ids (can just be unique per manager)
 //single/plural Identifier should be a string in a Localizeable strings file
 //this represents the entity getting selected, etc. so # selected labels, items, etc.
 //if one is not provided the default is items
 - (void)addFilterManagerWithFilters:(NSArray*)filters
                        headerTitles:(NSArray*)headerTitles
+                          headerIds:(NSArray*)headerIds
                    singleIdentifier:(NSString*)singleIdentifier
                    pluralIdentifier:(NSString*)pluralIdentifier;
 

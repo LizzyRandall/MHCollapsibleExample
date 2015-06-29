@@ -67,11 +67,12 @@
 
 - (void)addFilterManagerWithFilters:(NSArray*)filters
                        headerTitles:(NSArray*)headerTitles
+                          headerIds:(NSArray*)headerIds
                    singleIdentifier:(NSString*)singleIdentifier
                    pluralIdentifier:(NSString*)pluralIdentifier{
     
     MHCollapsibleViewManager *simpleManager = [[MHCollapsibleViewManager alloc] initManagerWithAnimation:UITableViewRowAnimationMiddle];
-    [simpleManager setFiltersWithFilterNames:filters headerTitles:headerTitles];
+    [simpleManager setFiltersWithFilterNames:filters headerTitles:headerTitles headerIds:headerIds];
     [simpleManager setTextIdentifierAndIndexWithSingleIdentifier:singleIdentifier pluralIdentifier:pluralIdentifier managerIndex:self.managerCount];
     simpleManager.delegate = self;
     self.managerCount++;

@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) NSArray *filterDataForSection;
 @property (strong, nonatomic) NSString *headerTitle;
+@property (strong, nonatomic) NSNumber *numberId;
 @property (strong, nonatomic) NSString *pluralIdentifier;
 @property (strong, nonatomic) NSString *singleIdentifier;
 @property (strong, nonatomic) NSString *stringFileName;
@@ -38,8 +39,11 @@
 static const NSUInteger numOfSectionsForChecklist = 1;
 
 #pragma Initialize Section
-- (instancetype)initWithArray:(NSArray*)filters headerTitle:(NSString*)headerTitle
-                     animation:(UITableViewRowAnimation)animation rowRange:(NSRange)rowRange{
+- (instancetype)initWithArray:(NSArray*)filters
+                  headerTitle:(NSString*)headerTitle
+                     headerId:(NSNumber*)headerId
+                    animation:(UITableViewRowAnimation)animation
+                     rowRange:(NSRange)rowRange{
     
     self = [self init];
     if(self){
@@ -132,6 +136,11 @@ static const NSUInteger numOfSectionsForChecklist = 1;
 
 - (NSString*)title{
     return self.headerTitle;
+}
+
+- (NSNumber*)headerId{
+    
+    return self.numberId;
 }
 
 - (NSString*)getIdentifier{

@@ -44,7 +44,7 @@
 //Set the data for the manager
 //This should be a mutable array of strings that the Manager then creates MHFilterLabel objects for
 //Can be used to override a manager's array of data
-- (void)setFiltersWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles;
+- (void)setFiltersWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles headerIds:(NSArray*)headerIds;
 
 //Identifier is a singleton of what are the sections, ex: label, question
 //while rootText gives the root such as survey

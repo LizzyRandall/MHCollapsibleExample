@@ -11,6 +11,8 @@
 @interface MHPackagedFilter()
 
 @property (nonatomic, strong) NSMutableArray *filterKeyValuePairs;
+@property (nonatomic, strong) NSNumber *numberId;
+@property (nonatomic, strong) NSString *name;
 @property (nonatomic) BOOL hierarchy;
 
 @end
@@ -24,6 +26,12 @@
     self.hierarchy = hierarchy;
     
     return self;
+}
+
+- (void)setNumberIdWithId:(NSNumber*)uniqueId name:(NSString*)name{
+    
+    self.numberId = uniqueId;
+    self.name = name;
 }
 
 - (void)addFilterWithKey:(NSString*)key value:(NSString*)value{
@@ -59,6 +67,16 @@
         ifRecordsExist = YES;
     }
     return ifRecordsExist;
+}
+
+- (NSNumber*)filterId{
+    
+    return self.numberId;
+}
+
+- (NSString*)filterName{
+    
+    return self.name;
 }
 
 @end

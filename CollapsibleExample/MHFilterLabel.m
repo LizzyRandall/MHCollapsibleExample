@@ -13,6 +13,7 @@
 
 @property NSString *name; //label for object, what is shown in initial cell
 @property CRUCellViewInteractionType type;
+@property NSNumber *numberId;
 @property BOOL checked; //keeps track of simple object check whenever selected
 
 //for checks/selections this is the array the user sees and interacts with
@@ -40,12 +41,16 @@ static const NSUInteger textAreaRow = 0;
 
 #pragma Initialize/Setters for Label
 
-- (instancetype)initLabelWithName:(NSString*)name checked:(BOOL)checked interactionType:(CRUCellViewInteractionType)type{
+- (instancetype)initLabelWithName:(NSString*)name
+                         uniqueId:(NSNumber*)uniqueId
+                          checked:(BOOL)checked
+                  interactionType:(CRUCellViewInteractionType)type{
     
     MHFilterLabel *newLabel = [self init];
     newLabel.name = name;
     newLabel.checked = checked;
     newLabel.type = type;
+    newLabel.numberId = uniqueId;
     return newLabel;
 }
 
@@ -122,6 +127,11 @@ static const NSUInteger textAreaRow = 0;
 - (CRUCellViewInteractionType)labelType{
     
     return self.type;
+}
+
+- (NSNumber*)labelId{
+    
+    return self.numberId;
 }
 
 //Unused by might be helpful for filterviewcontroller subclasses to check
