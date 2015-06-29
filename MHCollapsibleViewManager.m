@@ -469,12 +469,6 @@
     pathArray = nil;
 }
 
-//Returns a mutable array of packaged filters for each filter label
-//MHPackaged Filter is made up of key value pairs with a root key value pair
-//if it's a hierarchy. The root shows what type the children expansions are
-//for example surveys and survey questions. Each question name ex: "What is your phone number?"
-//will have a value. Key value pair: Question, Answer and yes there can be exactly the same
-//for the key value pair, so the same key can exist but with different values
 - (NSMutableArray*)returnPackagedFilter{
     
     __block NSString *filterTag = @"";
@@ -496,12 +490,13 @@
             }
             else{
                 
-                filterTag = section.getIdentifier;
+                filterTag = section.headerId.stringValue;
                 filter = [[MHPackagedFilter alloc] initWithRootKey:filterTag rootValue:section.getIdentifier hierarchy:NO];
             }
-            
+            //There is a unique Id for each section and a title, this names the filter and gives it a unique id
             [filter setNumberIdWithId:section.headerId name:section.title];
             sectionDataArray = section.returnCopyOfFilterData;
+        
             [sectionDataArray enumerateObjectsUsingBlock:^(MHFilterLabel *label, NSUInteger index, BOOL *stop){
                 if(self.hierarchy){
                     if(label.hasSelectedItems){

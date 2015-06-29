@@ -35,7 +35,7 @@
     
     NSString *label = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"ExampleStringsFile", nil);
     NSString *labels = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"ExampleStringsFile", nil);
-    [self addFilterManagerWithFilters:self.labels headerTitles:@[@"Labels"] headerIds:@[[[NSNumber alloc] initWithInt:0]] singleIdentifier:label pluralIdentifier:labels];
+    [self addFilterManagerWithFilters:self.labels headerTitles:@[@"Labels"] headerIds:@[[NSNumber numberWithInt:0]] singleIdentifier:label pluralIdentifier:labels];
     
     NSString *surveyQuestion = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_single", @"ExampleStringsFile", nil);
     NSString *surveyQuestions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_plural", @"ExampleStringsFile", nil);
@@ -55,7 +55,7 @@
     NSString *interaction = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_single", @"ExampleStringsFile", nil);
     NSString *interactions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_plural", @"ExampleStringsFile", nil);
     
-    [self addFilterManagerWithFilters:self.surveys headerTitles:@[@"Interactions"] headerIds:@[[NSNumber numberWithInt:0]] singleIdentifier:interaction pluralIdentifier:interactions];
+    [self addFilterManagerWithFilters:self.interactions headerTitles:@[@"Interactions"] headerIds:@[[NSNumber numberWithInt:1]] singleIdentifier:interaction pluralIdentifier:interactions];
 
 }
 
@@ -71,36 +71,25 @@
 
 - (NSArray*)surveys{
     
-    NSNumber *count=0;
-    
-    MHFilterLabel *label1 = [[MHFilterLabel alloc] initLabelWithName:@"How long have you been in America?" uniqueId:count checked:NO interactionType:CRUCellViewInteractionCheckList];
+    MHFilterLabel *label1 = [[MHFilterLabel alloc] initLabelWithName:@"How long have you been in America?" uniqueId:[NSNumber numberWithInt:0] checked:NO interactionType:CRUCellViewInteractionCheckList];
     [label1 setResultsWithKeyArray:@[@"Less than 6 months", @"1-2 years", @"2+ years"] resultValues:@[@NO, @NO, @NO]];
-    count = [NSNumber numberWithInt:count.intValue+1];
-    MHFilterLabel *label2 = [[MHFilterLabel alloc] initLabelWithName:@"What is your phone number?" uniqueId:count checked:NO interactionType:CRUCellViewInteractionTextBox];
-    count = [NSNumber numberWithInt:count.intValue+1];
-    MHFilterLabel *label3 = [[MHFilterLabel alloc] initLabelWithName:@"Would you like to find more about the Bible and Jesus Christ?" uniqueId:count checked:NO interactionType:CRUCellViewInteractionCheckList];
+    MHFilterLabel *label2 = [[MHFilterLabel alloc] initLabelWithName:@"What is your phone number?" uniqueId:[NSNumber numberWithInt:1] checked:NO interactionType:CRUCellViewInteractionTextBox];
+    MHFilterLabel *label3 = [[MHFilterLabel alloc] initLabelWithName:@"Would you like to find more about the Bible and Jesus Christ?" uniqueId:[NSNumber numberWithInt:2] checked:NO interactionType:CRUCellViewInteractionCheckList];
     [label3 setResultsWithKeyArray:@[@"Yes", @"No", @"No response"] resultValues:@[@NO, @NO, @NO]];
-    count = [NSNumber numberWithInt:count.intValue+1];
-    MHFilterLabel *label4 = [[MHFilterLabel alloc] initLabelWithName:@"What church do you go to?" uniqueId:count checked:NO interactionType:CRUCellViewInteractionTextBox];
+    MHFilterLabel *label4 = [[MHFilterLabel alloc] initLabelWithName:@"What church do you go to?" uniqueId:[NSNumber numberWithInt:3] checked:NO interactionType:CRUCellViewInteractionTextBox];
     
     NSArray *surveyArray1 = @[label1, label2, label3, label4];
     
-    count = 0;
-    
-    MHFilterLabel *label5 = [[MHFilterLabel alloc] initLabelWithName:@"What is your age?" uniqueId:count checked:NO interactionType:CRUCellViewInteractionCheckList];
-    count = [NSNumber numberWithInt:count.intValue+1];
+    MHFilterLabel *label5 = [[MHFilterLabel alloc] initLabelWithName:@"What is your age?" uniqueId:[NSNumber numberWithInt:3] checked:NO interactionType:CRUCellViewInteractionCheckList];
     [label5 setResultsWithKeyArray:@[@"5-10 years old", @"10-15 years old", @"15-20 years old", @"25+ years old"] resultValues:@[@NO, @NO, @NO, @NO]];
-    MHFilterLabel *label6 = [[MHFilterLabel alloc] initLabelWithName:@"What is your favorite snack?" uniqueId:count checked:NO interactionType:CRUCellViewInteractionTextBox];
-    count = [NSNumber numberWithInt:count.intValue+1];
-    MHFilterLabel *label7 = [[MHFilterLabel alloc] initLabelWithName:@"Where would say you are spiritually?" uniqueId:count checked:NO interactionType:CRUCellViewInteractionCheckList];
-    count = [NSNumber numberWithInt:count.intValue+1];
+    MHFilterLabel *label6 = [[MHFilterLabel alloc] initLabelWithName:@"What is your favorite snack?" uniqueId:[NSNumber numberWithInt:4] checked:NO interactionType:CRUCellViewInteractionTextBox];
+    MHFilterLabel *label7 = [[MHFilterLabel alloc] initLabelWithName:@"Where would say you are spiritually?" uniqueId:[NSNumber numberWithInt:5] checked:NO interactionType:CRUCellViewInteractionCheckList];
     [label7 setResultsWithKeyArray:@[@"Seeking truth", @"Believer in Christ", @"Not interested"] resultValues:@[@NO, @NO, @NO]];
-    MHFilterLabel *label8 = [[MHFilterLabel alloc] initLabelWithName:@"In your opinion, who is Jesus?" uniqueId:count checked:NO interactionType:CRUCellViewInteractionTextBox];
-    count = [NSNumber numberWithInt:count.intValue+1];
+    MHFilterLabel *label8 = [[MHFilterLabel alloc] initLabelWithName:@"In your opinion, who is Jesus?" uniqueId:[NSNumber numberWithInt:6] checked:NO interactionType:CRUCellViewInteractionTextBox];
     
     NSArray *surveyArray2 = @[label5, label6, label7, label8];
     
-    MHFilterLabel *label9 = [[MHFilterLabel alloc] initLabelWithName:@"Engel's scale" uniqueId:count checked:NO interactionType:CRUCellViewInteractionCheckList];
+    MHFilterLabel *label9 = [[MHFilterLabel alloc] initLabelWithName:@"Engel's scale" uniqueId:[NSNumber numberWithInt:7]checked:NO interactionType:CRUCellViewInteractionCheckList];
     [label9 setResultsWithKeyArray:@[@"don't know", @"-8 - no effective knowldge of Christianity", @"-7 - initial awareness of Christianity", @"-6 - interest in Christianity", @"-5 - aware of basic facts of the gospel", @"-4 - positive attitude toward the gospel", @"-3 - awareness of personal need", @"-2 - challenge and decision to act", @"-1 -repentance of faith", @"0 - CONVERSION", @"+1 new Christian", @"+2 - growing disciple", @"+3 - ministering disciple", @"+4 - multiplying disciple", @"No Response"] resultValues:@[@NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO]];
     
     NSArray *surveyArray3 = @[label9];
@@ -122,7 +111,9 @@
     
     [super buttonTapped:sender];
     
-    if(!self.isModalCurrentlyShown && [sender.title isEqualToString:@"Save"]){
+    NSString *saveString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultSave", self.currentStringFileName, nil);
+
+    if(!self.isModalCurrentlyShown && [sender.title isEqualToString:saveString]){
         
         [self dismissViewControllerAnimated:YES completion:nil];
     }

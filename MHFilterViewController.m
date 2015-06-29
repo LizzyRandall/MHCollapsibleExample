@@ -105,8 +105,6 @@
 //While the save and cancel checked here are on the filterviewcontroller itself
 - (IBAction)buttonTapped:(UIBarButtonItem*)sender{
     
-    
-    NSString *saveString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultSave", self.stringsFileName, nil);
     NSString *cancelString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultCancel", self.stringsFileName, nil);
     NSString *clearString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultClear", self.stringsFileName, nil);
     
@@ -128,23 +126,6 @@
             [self.tableView reloadData];
         }
     }
-    else if ([sender.title isEqualToString: saveString] && !self.modalCurrentlyShown){
-        
-        //Loop through the managers and get a MHPackagedFilter for each
-        //these are concatonated. MHPackagedFilter contains key/value pairs and can have a hierarchy
-        //depending if the manager had to create multiple sections
-        [self.managerArray enumerateObjectsUsingBlock:^(MHCollapsibleViewManager *manager, NSUInteger index, BOOL *stop){
-            NSMutableArray *filter = manager.returnPackagedFilter;
-            if(filter != nil){
-                [self.combinedFilters addObjectsFromArray:filter];
-            }
-        }];
-        
-        //Now the data is stored in an array of MHPackagedFilters, with key/value pairs
-        //They can be parsed and packaged to whatever API needs to be called
-        //For a subclass, just call super on this class and then handle the combinedFilters array accordingly
-        
-    }
     else if([sender.title isEqualToString:cancelString] && !self.modalCurrentlyShown){
         
         //dismiss modal, nothing needs to be sent to the search view controller or wherever the filter gets sent
@@ -153,9 +134,29 @@
     }
 }
 
+- (NSArray*)combinedFilter{
+    
+    NSMutableArray *combinedFilter = [[NSMutableArray alloc] init];
+    //Loop through the managers and get a MHPackagedFilter for each
+    //these are concatonated. MHPackagedFilter contains key/value pairs and can have a hierarchy
+    //depending if the manager had to create multiple sections
+    [self.managerArray enumerateObjectsUsingBlock:^(MHCollapsibleViewManager *manager, NSUInteger index, BOOL *stop){
+        NSMutableArray *filter = manager.returnPackagedFilter;
+        if(filter != nil){
+            [combinedFilter addObjectsFromArray:filter];
+        }
+    }];
+    return combinedFilter;
+}
+
 - (BOOL)isModalCurrentlyShown{
     
     return self.modalCurrentlyShown;
+}
+
+- (NSString*)currentStringFileName{
+    
+    return self.stringsFileName;
 }
 
 #pragma Manager Delegate

@@ -50,6 +50,7 @@ static const NSUInteger numOfSectionsForChecklist = 1;
         
         self.filterDataForSection = filters;
         self.headerTitle = headerTitle;
+        self.numberId = headerId;
         self.filterDataRange = rowRange;
         self.expanded = NO;
         self.stringFileName = @"MHCollapsibleManagerStrings";

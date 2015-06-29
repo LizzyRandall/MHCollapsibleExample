@@ -13,6 +13,10 @@
 
 - (void)buttonTapped:(UIBarButtonItem *)sender;
 
+//Output of implemented "saving" the filter
+//Returns array of MHPackagedFilters
+- (NSArray*)combinedFilter;
+
 //filters can be an array of arrays (if hierarchy collapsing)
 //headerTitles is an array of strings for those collapsing sections (non hierarchy or hierarchy)
 //headerIds is an array of unique ids (can just be unique per manager)
@@ -44,6 +48,7 @@
 //only for use based on extensive knowledge of class
 - (void)selectedCellWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
 - (void)setStringsFileNameWithName:(NSString*)name;
+- (NSString*)currentStringFileName;
 
 
 @end
