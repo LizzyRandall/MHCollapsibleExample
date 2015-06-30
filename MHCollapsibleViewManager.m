@@ -13,6 +13,7 @@
 @property (strong, nonatomic) NSString *headerTitle;
 @property (strong, nonatomic) NSString *singleIdentifier;
 @property (strong, nonatomic) NSString *pluralIdentifier;
+@property (strong, nonatomic) NSString *stringFileName;
 @property (strong, nonatomic) NSMutableArray *filterSections;
 @property (nonatomic) UITableViewRowAnimation rowAnimation;
 //hierarchy determines if Manager will be collapsible itself
@@ -60,6 +61,7 @@
         self.hierarchy = NO;
         self.rowAnimation = animation;
         self.filterSections = [self.filterSections init];
+        self.stringFileName = @"MHCollapsibleManagerStrings";
     }
     return self;
 }
@@ -143,6 +145,18 @@
     self.pluralIdentifier = pluralIdentifier;
 }
 
+- (void)setStringFileNameWith:(NSString *)stringFileName{
+    
+    if(stringFileName != nil && ![stringFileName isEqualToString:@""]){
+        
+        self.stringFileName = stringFileName;
+        
+        [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *section, NSUInteger index, BOOL *stop){
+            
+            [section setStringFileNameWith:stringFileName];
+        }];
+    }
+}
 
 #pragma Get Information on the Manager
 
@@ -219,11 +233,19 @@
     }
     [cell setCellViewInteractionWithType:type];
     switch (type) {
-        case CRUCellViewInteractionTextBox:
-        case CRUCellViewInteractionPicker:
-        case CRUCellViewInteractionCheckList:{
-            [cell changeCellStateWithToggle:checked];
-        }
+        case CRUCellViewInteractionCheckToggle:
+            if(checked){
+                [cell setCellClickedWithAccessory:UITableViewCellAccessoryCheckmark
+                                            style:UITableViewCellSelectionStyleDefault
+                                       labelColor:[UIColor blackColor] accessoryView:nil];
+                [cell changeCellStateWithToggle:checked];
+            }
+            else{
+                [cell setCellDefaultsWithAccessory:UITableViewCellAccessoryNone
+                                             style:UITableViewCellSelectionStyleNone
+                                        labelColor:[UIColor blackColor] accessoryView:nil];
+                [cell changeCellStateWithToggle:checked];
+            }
             break;
         case CRUCellViewInteractionHeader:{
             if(checked){
@@ -239,35 +261,16 @@
             [cell changeCellStateWithToggle:checked];
         }
             break;
-        default:{
-            if(checked){
-                [cell setCellClickedWithAccessory:UITableViewCellAccessoryCheckmark
-                                              style:UITableViewCellSelectionStyleDefault
-                                         labelColor:[UIColor blackColor] accessoryView:nil];
-                [cell changeCellStateWithToggle:checked];
-            }
-            else{
-                [cell setCellDefaultsWithAccessory:UITableViewCellAccessoryNone
-                                               style:UITableViewCellSelectionStyleNone
-                                          labelColor:[UIColor blackColor] accessoryView:nil];
-                [cell changeCellStateWithToggle:checked];
-            }
-            
-        }
+        default:
+            [cell changeCellStateWithToggle:checked];
+            break;
     }
     return cell;
 }
 
 - (NSString*)getIdentifier{
     
-    NSString *identifier;
-    if(self.numOfSelectedRowsForText > 1){
-        identifier = self.pluralIdentifier;
-    }
-    else{
-        identifier = self.singleIdentifier;
-    }
-    return identifier;
+    return self.numOfSelectedRowsForText > 1 ? self.pluralIdentifier : self.singleIdentifier;
 }
 
 - (NSString*)returnDetailText{
@@ -277,13 +280,13 @@
     NSString *itemTitle = self.getIdentifier;
     
     if(itemTitle == nil){
-        itemTitle = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_defaultText_single", @"Localizable", nil);
+        itemTitle = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_CellHeader_defaultText_single", self.stringFileName, nil);
     }
     
     if(count < 1){
         count = self.filterSections.count;
         if(count > 1){
-            itemTitle = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_defaultText_plural", @"Localizable", nil);
+            itemTitle = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_CellHeader_defaultText_plural", self.stringFileName, nil);
         }
     }
     detailedText = [NSString stringWithFormat:NSLocalizedString(itemTitle,nil), count];
@@ -351,29 +354,10 @@
     else{
         
         switch (type) {
-            //modal types
-            case CRUCellViewInteractionPicker:
-            case CRUCellViewInteractionCheckList:
-            case CRUCellViewInteractionTextBox:
-            {
-                [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *section, NSUInteger index, BOOL *stop){
-                    
-                    if(section.returnExpanded && [section rowNumInRange:indexRow]){
-                        //NOTE: this flips the expanded boolean and then returns it
-                        BOOL check = [section toggleCheckAndReturnWithIndex:indexRow];
-                        [cell changeCellStateWithToggle:check];
-                        [section setCurrentModalIndexWithRow:indexRow];
-                        //call delegate to create modal for checklist
-                        //section should delegate views/data on modal
-                        [self.delegate createModalWithType:type section:section rowPath:indexPath];
-                        *stop = YES;//kick out since we found the row
-                    }
-                }];
-            }
-            break;
-            
+                
             //Header and Toggle types (non modal)
-            default:
+            case CRUCellViewInteractionHeader:
+            case CRUCellViewInteractionCheckToggle:
             {
                 [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *section, NSUInteger index, BOOL *stop){
                     //toggle the header in collapsed state or expanded state
@@ -399,8 +383,27 @@
                         *stop = YES;//kick out since we found the row
                     }
                 }];
-            }
                 break;
+            }
+            //modal types
+            default:
+            {
+                [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *section, NSUInteger index, BOOL *stop){
+                    
+                    if(section.returnExpanded && [section rowNumInRange:indexRow]){
+                        //NOTE: this flips the expanded boolean and then returns it
+                        BOOL check = [section toggleCheckAndReturnWithIndex:indexRow];
+                        [cell changeCellStateWithToggle:check];
+                        [section setCurrentModalIndexWithRow:indexRow];
+                        //call delegate to create modal for checklist
+                        //section should delegate views/data on modal
+                        [self.delegate selectedCellWithType:type section:section rowPath:indexPath];
+                        *stop = YES;//kick out since we found the row
+                    }
+                }];
+                break;
+            }
+        
         }//end switch
     }
     //Notify the view controller to invoke specific modal based on type

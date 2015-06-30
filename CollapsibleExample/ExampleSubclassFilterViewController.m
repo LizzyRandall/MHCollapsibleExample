@@ -36,15 +36,15 @@
 - (void)createManagersAndPopulateData{
     
     
-    NSString *label = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"Localizable", nil);
-    NSString *labels = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"Localizable", nil);
+    NSString *label = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"ExampleStringsFile", nil);
+    NSString *labels = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"ExampleStringsFile", nil);
     [self addFilterManagerWithFilters:self.returnLabelArray headerTitles:@[@"Labels"] singleIdentifier:label pluralIdentifier:labels];
     
-    NSString *surveyQuestion = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_single", @"Localizable", nil);
-    NSString *surveyQuestions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_plural", @"Localizable", nil);
+    NSString *surveyQuestion = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_single", @"ExampleStringsFile", nil);
+    NSString *surveyQuestions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_plural", @"ExampleStringsFile", nil);
     
-    NSString *survey = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_single", @"Localizable", nil);
-    NSString *surveys = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_plural", @"Localizable", nil);
+    NSString *survey = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_single", @"ExampleStringsFile", nil);
+    NSString *surveys = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_plural", @"ExampleStringsFile", nil);
     
     [self addFilterManagerWithFilters:@[self.returnGuestbookArray, self.returnEngelsScaleArray, self.returnInternationalStudentsArray]
                          headerTitles:@[@"Bridges@UCF Guestbook", @"Engels Scale", @"International Students"]
@@ -54,8 +54,8 @@
     [self setCurrentManagerSettingsWithTopHierarchyTitle:@"Surveys" rootSingleIdentifier:survey rootPluralIdentifier:surveys];
 
 
-    NSString *interaction = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_single", @"Localizable", nil);
-    NSString *interactions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_plural", @"Localizable", nil);
+    NSString *interaction = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_single", @"ExampleStringsFile", nil);
+    NSString *interactions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_plural", @"ExampleStringsFile", nil);
     
     [self addFilterManagerWithFilters:self.returnInteractionsArray headerTitles:@[@"Interactions"] singleIdentifier:interaction pluralIdentifier:interactions];
 
@@ -64,7 +64,7 @@
 //simply populates data since it's more complicated now
 - (NSArray*)returnLabelArray{
     
-    NSArray* filterData = @[[[MHFilterLabel alloc] initLabelWithName:@"Involved" checked:NO interactionType:CRUCellViewInteractionCheckToggle],[[MHFilterLabel alloc] initLabelWithName:@"Engaged Disciple" checked:NO interactionType:CRUCellViewInteractionCheckToggle] , [[MHFilterLabel alloc] initLabelWithName:@"Leader" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Seeker" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2011 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2012 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2013 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2014 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2015 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"6x6 Challenge" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Aubreys friends" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Ambassadors" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Friend" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Logistics" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Staff" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Chinese Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"COA Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Friendship Partner" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Multi-Nations Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"New/Growing Disciples" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"SAN Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Thanksgiving volunteer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"vision 2014" checked:NO interactionType:CRUCellViewInteractionCheckToggle]];
+    NSArray* filterData = @[[[MHFilterLabel alloc] initLabelWithName:@"Involved" checked:NO interactionType:CRUCellViewInteractionCustom],[[MHFilterLabel alloc] initLabelWithName:@"Engaged Disciple" checked:NO interactionType:CRUCellViewInteractionCheckToggle] , [[MHFilterLabel alloc] initLabelWithName:@"Leader" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Seeker" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2011 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2012 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2013 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2014 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2015 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"6x6 Challenge" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Aubreys friends" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Ambassadors" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Friend" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Logistics" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Staff" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Chinese Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"COA Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Friendship Partner" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Multi-Nations Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"New/Growing Disciples" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"SAN Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Thanksgiving volunteer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"vision 2014" checked:NO interactionType:CRUCellViewInteractionCheckToggle]];
     return filterData;
 }
 
@@ -72,7 +72,7 @@
 - (NSArray*)returnInternationalStudentsArray{
     
     NSArray *filterData;
-    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"Localizable", nil);
+    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"ExampleStringsFile", nil);
     
     MHFilterLabel *checkListLabel = [[MHFilterLabel alloc] initLabelWithName:@"English Name" checked:NO interactionType:CRUCellViewInteractionTextBox];
     [checkListLabel setPlaceHolderTextWithString:placeHolderText];
@@ -117,7 +117,7 @@
 
 - (NSArray*)returnGuestbookArray{
     
-    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"Localizable", nil);
+    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"ExampleStringsFile", nil);
     
     MHFilterLabel *checkListLabel = [[MHFilterLabel alloc] initLabelWithName:@"What is your email address?" checked:NO interactionType:CRUCellViewInteractionTextBox];
     [checkListLabel setPlaceHolderTextWithString:placeHolderText];

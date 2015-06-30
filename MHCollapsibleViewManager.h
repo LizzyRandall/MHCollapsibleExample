@@ -24,7 +24,7 @@
 
 @required
 
-- (void) createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath;
+- (void)selectedCellWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath;
 
 @end
 
@@ -52,6 +52,8 @@
 
 //If this is not set, the manager will use the sections identifier combo above
 - (void)setTextIdentifierForManagerWithSingleIdentifier:(NSString *)singleIdentifier pluralIdentifier:(NSString*)pluralIdentifier;
+
+- (void)setStringFileNameWith:(NSString *)stringFileName;
 
 //RETURN METHODS
 

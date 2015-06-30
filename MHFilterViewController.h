@@ -35,11 +35,13 @@
 
 - (BOOL)isModalCurrentlyShown;
 
+//To make modals consistent in background color
 - (void)setModalBackgroundColorWithColor:(UIColor *)modalBackgroundColor;
 
 //Advanced methods to customize and rework code
 //only for use based on extensive knowledge of class
-- (MHCollapsibleViewManager*)getManagerAtIndex:(NSUInteger)index;
-- (MHCollapsibleSection*)getCurrentCollapsibleSection;
+- (void)selectedCellWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
+- (void)setStringsFileNameWithName:(NSString*)name;
+
 
 @end

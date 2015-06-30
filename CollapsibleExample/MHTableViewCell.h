@@ -19,7 +19,8 @@ typedef NS_ENUM(NSUInteger, CRUCellViewInteractionType){
     CRUCellViewInteractionCheckToggle, //normal row that toggles a checkmark
     CRUCellViewInteractionCheckList, //modal with uitableview to check multiple types
     CRUCellViewInteractionPicker, //modal with uipicker to pick one
-    CRUCellViewInteractionTextBox //modal with textbox for user to enter manually
+    CRUCellViewInteractionTextBox, //modal with textbox for user to enter manually
+    CRUCellViewInteractionCustom //custom interaction calls modal just like tableview/textbox but can be handled by subclass
 };
 
 //calls super first then sets defaults
