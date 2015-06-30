@@ -12,7 +12,7 @@
 
 @property (strong, nonatomic) NSArray *filterDataForSection;
 @property (strong, nonatomic) NSString *headerTitle;
-@property (strong, nonatomic) NSNumber *numberId;
+@property (strong, nonatomic) NSString *stringId;
 @property (strong, nonatomic) NSString *pluralIdentifier;
 @property (strong, nonatomic) NSString *singleIdentifier;
 @property (strong, nonatomic) NSString *stringFileName;
@@ -41,7 +41,7 @@ static const NSUInteger numOfSectionsForChecklist = 1;
 #pragma Initialize Section
 - (instancetype)initWithArray:(NSArray*)filters
                   headerTitle:(NSString*)headerTitle
-                     headerId:(NSNumber*)headerId
+                     headerId:(NSString*)headerId
                     animation:(UITableViewRowAnimation)animation
                      rowRange:(NSRange)rowRange{
     
@@ -50,7 +50,7 @@ static const NSUInteger numOfSectionsForChecklist = 1;
         
         self.filterDataForSection = filters;
         self.headerTitle = headerTitle;
-        self.numberId = headerId;
+        self.stringId = headerId;
         self.filterDataRange = rowRange;
         self.expanded = NO;
         self.stringFileName = @"MHCollapsibleManagerStrings";
@@ -139,9 +139,9 @@ static const NSUInteger numOfSectionsForChecklist = 1;
     return self.headerTitle;
 }
 
-- (NSNumber*)headerId{
+- (NSString*)headerId{
     
-    return self.numberId;
+    return self.stringId;
 }
 
 - (NSString*)getIdentifier{

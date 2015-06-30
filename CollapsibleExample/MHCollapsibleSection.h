@@ -22,7 +22,7 @@
 //Initialize
 - (instancetype)initWithArray:(NSArray*)filters
                   headerTitle:(NSString*)headerTitle
-                     headerId:(NSNumber*)headerId
+                     headerId:(NSString*)headerId
                     animation:(UITableViewRowAnimation)animation
                      rowRange:(NSRange)rowRange;
 
@@ -47,7 +47,7 @@
 
 - (NSUInteger)headerRowNum;
 
-- (NSNumber*)headerId;
+- (NSString*)headerId;
 
 - (NSUInteger)numOfRows;
 

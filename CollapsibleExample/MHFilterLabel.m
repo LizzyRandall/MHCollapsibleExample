@@ -13,7 +13,7 @@
 
 @property NSString *name; //label for object, what is shown in initial cell
 @property CRUCellViewInteractionType type;
-@property NSNumber *numberId;
+@property NSString *stringId;
 @property BOOL checked; //keeps track of simple object check whenever selected
 
 //for checks/selections this is the array the user sees and interacts with
@@ -42,7 +42,7 @@ static const NSUInteger textAreaRow = 0;
 #pragma Initialize/Setters for Label
 
 - (instancetype)initLabelWithName:(NSString*)name
-                         uniqueId:(NSNumber*)uniqueId
+                         uniqueId:(NSString*)uniqueId
                           checked:(BOOL)checked
                   interactionType:(CRUCellViewInteractionType)type{
     
@@ -50,7 +50,7 @@ static const NSUInteger textAreaRow = 0;
     newLabel.name = name;
     newLabel.checked = checked;
     newLabel.type = type;
-    newLabel.numberId = uniqueId;
+    newLabel.stringId = uniqueId;
     return newLabel;
 }
 
@@ -129,9 +129,9 @@ static const NSUInteger textAreaRow = 0;
     return self.type;
 }
 
-- (NSNumber*)labelId{
+- (NSString*)labelId{
     
-    return self.numberId;
+    return self.stringId;
 }
 
 //Unused by might be helpful for filterviewcontroller subclasses to check
@@ -269,7 +269,7 @@ static const NSUInteger textAreaRow = 0;
         }
     }];
     
-    return [constructingArray copy];
+    return constructingArray;
 }
 - (BOOL)resultHasCheck:(NSUInteger)row{
     

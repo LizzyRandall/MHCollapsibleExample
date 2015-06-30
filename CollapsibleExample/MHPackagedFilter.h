@@ -16,7 +16,7 @@
 
 - (instancetype)initWithRootKey:(NSString*)rootKey rootValue:(NSString*)rootValue hierarchy:(BOOL)hierarchy;
 
-- (void)setNumberIdWithId:(NSNumber*)uniqueId name:(NSString*)name;
+- (void)setuniqueIdWithId:(NSString*)uniqueId name:(NSString*)name;
 
 - (void)addFilterWithKey:(NSString*)key value:(NSString*)value;
 
@@ -24,8 +24,9 @@
 
 - (NSString*)returnKeyAtIndex:(NSUInteger)index;
 
-- (NSNumber*)filterId;
+- (NSString*)filterId;
 - (NSString*)filterName;
+- (NSUInteger)numberOfRows;
 
 - (BOOL)containsFilterKeyValues;
 

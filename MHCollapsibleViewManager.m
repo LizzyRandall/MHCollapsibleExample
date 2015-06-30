@@ -87,7 +87,7 @@
     if(![[filterNames objectAtIndex:0] isKindOfClass:[NSArray class]]){
         
         NSString *sectionTitle;
-        NSNumber *headerId;
+        NSString *headerId;
         if(headerTitles != nil){
             sectionTitle = headerTitles[0];
             headerId = headerIds[0];
@@ -485,16 +485,16 @@
             
             if(self.hierarchy){
                 
-                filterTag = self.singleIdentifier;
+                filterTag = self.title;
                 filter = [[MHPackagedFilter alloc] initWithRootKey:filterTag rootValue:section.getIdentifier hierarchy:YES];
             }
             else{
                 
-                filterTag = section.headerId.stringValue;
+                filterTag = section.headerId;
                 filter = [[MHPackagedFilter alloc] initWithRootKey:filterTag rootValue:section.getIdentifier hierarchy:NO];
             }
             //There is a unique Id for each section and a title, this names the filter and gives it a unique id
-            [filter setNumberIdWithId:section.headerId name:section.title];
+            [filter setuniqueIdWithId:section.headerId name:section.title];
             sectionDataArray = section.returnCopyOfFilterData;
         
             [sectionDataArray enumerateObjectsUsingBlock:^(MHFilterLabel *label, NSUInteger index, BOOL *stop){
@@ -502,7 +502,7 @@
                     if(label.hasSelectedItems){
                         labelDataArray = label.returnSelectedArray;
                         [labelDataArray enumerateObjectsUsingBlock:^(NSString *key, NSUInteger index, BOOL *stop){
-                            [filter addFilterWithKey:label.labelId.stringValue value:key];
+                            [filter addFilterWithKey:label.labelId value:key];
                         }];
                     }
                 }

@@ -11,7 +11,7 @@
 @interface MHPackagedFilter()
 
 @property (nonatomic, strong) NSMutableArray *filterKeyValuePairs;
-@property (nonatomic, strong) NSNumber *numberId;
+@property (nonatomic, strong) NSString *stringId;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic) BOOL hierarchy;
 
@@ -28,9 +28,9 @@
     return self;
 }
 
-- (void)setNumberIdWithId:(NSNumber*)uniqueId name:(NSString*)name{
+- (void)setuniqueIdWithId:(NSString*)uniqueId name:(NSString*)name{
     
-    self.numberId = uniqueId;
+    self.stringId = uniqueId;
     self.name = name;
 }
 
@@ -44,7 +44,7 @@
 
 - (NSString*)returnValueAtIndex:(NSUInteger)index{
     
-    MHKeyValuePair *keyValue = self.filterKeyValuePairs[0];
+    MHKeyValuePair *keyValue = self.filterKeyValuePairs[index];
     NSString *value = keyValue.returnValue;
     keyValue = nil;
     return value;
@@ -52,7 +52,7 @@
 
 - (NSString*)returnKeyAtIndex:(NSUInteger)index{
     
-    MHKeyValuePair *keyValue = self.filterKeyValuePairs[0];
+    MHKeyValuePair *keyValue = self.filterKeyValuePairs[index];
     NSString *key = keyValue.returnKey;
     keyValue = nil;
     return key;
@@ -69,14 +69,19 @@
     return ifRecordsExist;
 }
 
-- (NSNumber*)filterId{
+- (NSString*)filterId{
     
-    return self.numberId;
+    return self.stringId;
 }
 
 - (NSString*)filterName{
     
     return self.name;
+}
+
+- (NSUInteger)numberOfRows{
+    
+    return self.filterKeyValuePairs.count;
 }
 
 @end

@@ -13,7 +13,7 @@
 @interface MHFilterLabel : NSObject
 
 - (instancetype)initLabelWithName:(NSString*)name
-                         uniqueId:(NSNumber*)uniqueId
+                         uniqueId:(NSString*)uniqueId
                           checked:(BOOL)checked
                   interactionType:(CRUCellViewInteractionType)type;
 
@@ -27,7 +27,7 @@
 
 - (CRUCellViewInteractionType)labelType;
 
-- (NSNumber*)labelId;
+- (NSString*)labelId;
 
 - (NSUInteger)numOfRows;
 
