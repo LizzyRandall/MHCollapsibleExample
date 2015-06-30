@@ -75,7 +75,7 @@
 
 //called after Initializing Manager
 //can take double array or single array depending if hierarchy
-- (void)setFiltersWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles {
+- (void)setFiltersWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles headerIds:(NSArray*)headerIds{
     
     __block NSUInteger start = 0;
     //used in loop to populate section array
@@ -87,17 +87,20 @@
     if(![[filterNames objectAtIndex:0] isKindOfClass:[NSArray class]]){
         
         NSString *sectionTitle;
+        NSString *headerId;
         if(headerTitles != nil){
-            sectionTitle = [headerTitles objectAtIndex:0];
+            sectionTitle = headerTitles[0];
+            headerId = headerIds[0];
         }
         else{
             sectionTitle = self.headerTitle;
+            headerId = 0;
         }
         
         filterCount++; //offset for header included in the length
         section = [MHCollapsibleSection alloc];
         range = NSMakeRange(start, filterCount);
-        section = [section initWithArray:filterNames headerTitle:sectionTitle animation:self.rowAnimation rowRange:range];
+        section = [section initWithArray:filterNames headerTitle:sectionTitle headerId:headerId animation:self.rowAnimation rowRange:range];
         [self.filterSections addObject:section];
         
     }
@@ -115,7 +118,7 @@
                 filterCount = filters.count+1;//offset for header
                 range = NSMakeRange(start, filterCount);
                 section = [MHCollapsibleSection alloc];
-                section = [section initWithArray:filters headerTitle:[headerTitles objectAtIndex:index] animation:self.rowAnimation rowRange:range];
+                section = [section initWithArray:filters headerTitle:headerTitles[index] headerId:headerIds[index] animation:self.rowAnimation rowRange:range];
                 [self.filterSections addObject:section];
                 start++; //offset one for location for the next header
             }];
@@ -466,12 +469,6 @@
     pathArray = nil;
 }
 
-//Returns a mutable array of packaged filters for each filter label
-//MHPackaged Filter is made up of key value pairs with a root key value pair
-//if it's a hierarchy. The root shows what type the children expansions are
-//for example surveys and survey questions. Each question name ex: "What is your phone number?"
-//will have a value. Key value pair: Question, Answer and yes there can be exactly the same
-//for the key value pair, so the same key can exist but with different values
 - (NSMutableArray*)returnPackagedFilter{
     
     __block NSString *filterTag = @"";
@@ -488,22 +485,24 @@
             
             if(self.hierarchy){
                 
-                filterTag = self.singleIdentifier;
+                filterTag = self.title;
                 filter = [[MHPackagedFilter alloc] initWithRootKey:filterTag rootValue:section.getIdentifier hierarchy:YES];
             }
             else{
                 
-                filterTag = section.getIdentifier;
+                filterTag = section.headerId;
+                filter = [[MHPackagedFilter alloc] initWithRootKey:filterTag rootValue:section.getIdentifier hierarchy:NO];
             }
-            
-            filter = [[MHPackagedFilter alloc] initWithRootKey:filterTag rootValue:section.getIdentifier hierarchy:NO];
+            //There is a unique Id for each section and a title, this names the filter and gives it a unique id
+            [filter setuniqueIdWithId:section.headerId name:section.title];
             sectionDataArray = section.returnCopyOfFilterData;
+        
             [sectionDataArray enumerateObjectsUsingBlock:^(MHFilterLabel *label, NSUInteger index, BOOL *stop){
                 if(self.hierarchy){
                     if(label.hasSelectedItems){
                         labelDataArray = label.returnSelectedArray;
                         [labelDataArray enumerateObjectsUsingBlock:^(NSString *key, NSUInteger index, BOOL *stop){
-                            [filter addFilterWithKey:label.labelName value:key];
+                            [filter addFilterWithKey:label.labelId value:key];
                         }];
                     }
                 }

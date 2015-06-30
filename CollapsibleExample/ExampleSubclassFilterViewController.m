@@ -10,12 +10,10 @@
 
 @interface ExampleSubclassFilterViewController ()
 
-- (NSArray*)returnLabelArray;
-- (NSArray*)returnInteractionsArray;
-- (NSArray*)returnAssignedToArray;
-- (NSArray*)returnGuestbookArray;
-- (NSArray*)returnEngelsScaleArray;
-- (NSArray*)returnInternationalStudentsArray;
+- (NSArray*)labels;
+- (NSArray*)surveys;
+- (NSArray*)interactions;
+- (void)printFilterWithArray:(NSArray*)filterArray;
 
 @end
 
@@ -38,7 +36,7 @@
     
     NSString *label = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"ExampleStringsFile", nil);
     NSString *labels = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"ExampleStringsFile", nil);
-    [self addFilterManagerWithFilters:self.returnLabelArray headerTitles:@[@"Labels"] singleIdentifier:label pluralIdentifier:labels];
+    [self addFilterManagerWithFilters:self.labels headerTitles:@[@"Labels"] headerIds:@[@"0"] singleIdentifier:label pluralIdentifier:labels];
     
     NSString *surveyQuestion = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_single", @"ExampleStringsFile", nil);
     NSString *surveyQuestions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_plural", @"ExampleStringsFile", nil);
@@ -46,8 +44,9 @@
     NSString *survey = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_single", @"ExampleStringsFile", nil);
     NSString *surveys = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_plural", @"ExampleStringsFile", nil);
     
-    [self addFilterManagerWithFilters:@[self.returnGuestbookArray, self.returnEngelsScaleArray, self.returnInternationalStudentsArray]
-                         headerTitles:@[@"Bridges@UCF Guestbook", @"Engels Scale", @"International Students"]
+    [self addFilterManagerWithFilters:self.surveys
+                         headerTitles:@[@"Bridges Guestbook", @"International Students", @"Engels Scale"]
+                            headerIds:@[@"0", @"1", @"2"]
                      singleIdentifier:surveyQuestion
                      pluralIdentifier:surveyQuestions];
     
@@ -57,123 +56,87 @@
     NSString *interaction = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_single", @"ExampleStringsFile", nil);
     NSString *interactions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_plural", @"ExampleStringsFile", nil);
     
-    [self addFilterManagerWithFilters:self.returnInteractionsArray headerTitles:@[@"Interactions"] singleIdentifier:interaction pluralIdentifier:interactions];
+    [self addFilterManagerWithFilters:self.interactions headerTitles:@[@"Interactions"] headerIds:@[@"0"] singleIdentifier:interaction pluralIdentifier:interactions];
 
 }
 
-//simply populates data since it's more complicated now
-- (NSArray*)returnLabelArray{
+- (NSArray*)labels{
     
-    NSArray* filterData = @[[[MHFilterLabel alloc] initLabelWithName:@"Involved" checked:NO interactionType:CRUCellViewInteractionCustom],[[MHFilterLabel alloc] initLabelWithName:@"Engaged Disciple" checked:NO interactionType:CRUCellViewInteractionCheckToggle] , [[MHFilterLabel alloc] initLabelWithName:@"Leader" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Seeker" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2011 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2012 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2013 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2014 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"2015 New" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"6x6 Challenge" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Aubreys friends" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Ambassadors" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Friend" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Logistics" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Bridges Staff" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Chinese Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"COA Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Friendship Partner" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Multi-Nations Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"New/Growing Disciples" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"SAN Min Laborer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Thanksgiving volunteer" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"vision 2014" checked:NO interactionType:CRUCellViewInteractionCheckToggle]];
-    return filterData;
+    MHFilterLabel *label1 = [[MHFilterLabel alloc] initLabelWithName:@"Freshman" uniqueId:@"0" checked:NO interactionType:CRUCellViewInteractionCheckToggle];
+    MHFilterLabel *label2 = [[MHFilterLabel alloc] initLabelWithName:@"Sophomore" uniqueId:@"1" checked:NO interactionType:CRUCellViewInteractionCheckToggle];
+    MHFilterLabel *label3 = [[MHFilterLabel alloc] initLabelWithName:@"Junior" uniqueId:@"2" checked:NO interactionType:CRUCellViewInteractionCheckToggle];
+    MHFilterLabel *label4 = [[MHFilterLabel alloc] initLabelWithName:@"Senior" uniqueId:@"3" checked:NO interactionType:CRUCellViewInteractionCheckToggle];
+    
+    return @[label1, label2, label3, label4];
 }
 
-
-- (NSArray*)returnInternationalStudentsArray{
+- (NSArray*)surveys{
     
-    NSArray *filterData;
-    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"ExampleStringsFile", nil);
+    MHFilterLabel *label1 = [[MHFilterLabel alloc] initLabelWithName:@"How long have you been in America?" uniqueId:@"0" checked:NO interactionType:CRUCellViewInteractionCheckList];
+    [label1 setResultsWithKeyArray:@[@"Less than 6 months", @"1-2 years", @"2+ years"] resultValues:@[@NO, @NO, @NO]];
+    MHFilterLabel *label2 = [[MHFilterLabel alloc] initLabelWithName:@"What is your phone number?" uniqueId:@"1" checked:NO interactionType:CRUCellViewInteractionTextBox];
+    MHFilterLabel *label3 = [[MHFilterLabel alloc] initLabelWithName:@"Would you like to find more about the Bible and Jesus Christ?" uniqueId:@"2" checked:NO interactionType:CRUCellViewInteractionCheckList];
+    [label3 setResultsWithKeyArray:@[@"Yes", @"No", @"No response"] resultValues:@[@NO, @NO, @NO]];
+    MHFilterLabel *label4 = [[MHFilterLabel alloc] initLabelWithName:@"What church do you go to?" uniqueId:@"2" checked:NO interactionType:CRUCellViewInteractionTextBox];
     
-    MHFilterLabel *checkListLabel = [[MHFilterLabel alloc] initLabelWithName:@"English Name" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel2 = [[MHFilterLabel alloc] initLabelWithName:@"姓名（汉字)" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel2 setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel3 = [[MHFilterLabel alloc] initLabelWithName:@"Spiritual Status" checked:NO interactionType:CRUCellViewInteractionCheckList];
-    [checkListLabel3 setResultsWithKeyArray:@[@"Unknown", @"Non-believer, uninterested", @"Non-believer, seeking", @"Believer, new/needs follow-up", @"Believer, established/growing", @"Believer, ministering", @"Believer, multiplying", @"No Response"] resultValues:@[@NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO]];
-    MHFilterLabel *checkListLabel4 = [[MHFilterLabel alloc] initLabelWithName:@"Martial Status" checked:NO interactionType:CRUCellViewInteractionCheckList];
-    [checkListLabel4 setResultsWithKeyArray:@[@"Single", @"Married", @"Divorced", @"No Response"] resultValues:@[@NO, @NO, @NO, @NO]];
-    MHFilterLabel *checkListLabel5 = [[MHFilterLabel alloc] initLabelWithName:@"Spouse" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel5 setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel6 = [[MHFilterLabel alloc] initLabelWithName:@"Children" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel6 setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel7 = [[MHFilterLabel alloc] initLabelWithName:@"Hometown/Province" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel7 setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel8 = [[MHFilterLabel alloc] initLabelWithName:@"University in Home Country" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel8 setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel9 = [[MHFilterLabel alloc] initLabelWithName:@"Major/Field of Study" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel9 setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel10 = [[MHFilterLabel alloc] initLabelWithName:@"Church" checked:NO interactionType:CRUCellViewInteractionCheckList];
-    [checkListLabel10 setResultsWithKeyArray:@[@"中华教会 OCC (Bumby/Rouse)", @"福音教会 OCECC", @"灵粮堂 Bread of Life (Red Bug)", @"台福教会 Dr. Wu's", @"基石教会 Living Stone", @"Other", @"None", @"No Response"] resultValues:@[@NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO]];
-    MHFilterLabel *checkListLabel11 = [[MHFilterLabel alloc] initLabelWithName:@"Church(if other)" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel11 setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel12 = [[MHFilterLabel alloc] initLabelWithName:@"Date of Arrival in Orlando" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel12 setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel13 = [[MHFilterLabel alloc] initLabelWithName:@"Date of Departure in Orlando" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel13 setPlaceHolderTextWithString:placeHolderText];
-    MHFilterLabel *checkListLabel14 = [[MHFilterLabel alloc] initLabelWithName:@"Notes" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    filterData = @[checkListLabel, checkListLabel2, checkListLabel3, checkListLabel4, checkListLabel5, checkListLabel6, checkListLabel7, checkListLabel8, checkListLabel9, checkListLabel10,
-                   checkListLabel11, checkListLabel12, checkListLabel13, checkListLabel14];
-    return filterData;
+    NSArray *surveyArray1 = @[label1, label2, label3, label4];
+    
+    MHFilterLabel *label5 = [[MHFilterLabel alloc] initLabelWithName:@"What is your age?" uniqueId:@"3" checked:NO interactionType:CRUCellViewInteractionCheckList];
+    [label5 setResultsWithKeyArray:@[@"5-10 years old", @"10-15 years old", @"15-20 years old", @"25+ years old"] resultValues:@[@NO, @NO, @NO, @NO]];
+    MHFilterLabel *label6 = [[MHFilterLabel alloc] initLabelWithName:@"What is your favorite snack?" uniqueId:@"4" checked:NO interactionType:CRUCellViewInteractionTextBox];
+    MHFilterLabel *label7 = [[MHFilterLabel alloc] initLabelWithName:@"Where would say you are spiritually?" uniqueId:@"5" checked:NO interactionType:CRUCellViewInteractionCheckList];
+    [label7 setResultsWithKeyArray:@[@"Seeking truth", @"Believer in Christ", @"Not interested"] resultValues:@[@NO, @NO, @NO]];
+    MHFilterLabel *label8 = [[MHFilterLabel alloc] initLabelWithName:@"In your opinion, who is Jesus?" uniqueId:@"6" checked:NO interactionType:CRUCellViewInteractionTextBox];
+    
+    NSArray *surveyArray2 = @[label5, label6, label7, label8];
+    
+    MHFilterLabel *label9 = [[MHFilterLabel alloc] initLabelWithName:@"Engel's scale" uniqueId:@"7"checked:NO interactionType:CRUCellViewInteractionCheckList];
+    [label9 setResultsWithKeyArray:@[@"don't know", @"-8 - no effective knowldge of Christianity", @"-7 - initial awareness of Christianity", @"-6 - interest in Christianity", @"-5 - aware of basic facts of the gospel", @"-4 - positive attitude toward the gospel", @"-3 - awareness of personal need", @"-2 - challenge and decision to act", @"-1 -repentance of faith", @"0 - CONVERSION", @"+1 new Christian", @"+2 - growing disciple", @"+3 - ministering disciple", @"+4 - multiplying disciple", @"No Response"] resultValues:@[@NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO]];
+    
+    NSArray *surveyArray3 = @[label9];
+    
+    return @[surveyArray1, surveyArray2, surveyArray3];
 }
 
-- (NSArray*)returnEngelsScaleArray{
+- (NSArray*)interactions{
     
-    NSArray *filterData;
-    MHFilterLabel *checkListLabel1 = [[MHFilterLabel alloc] initLabelWithName:@"Engel's Scale" checked:NO interactionType:CRUCellViewInteractionCheckList];
-    [checkListLabel1 setResultsWithKeyArray:@[@"don't know", @"-8 - no effective knowldge of Christianity", @"-7 - initial awareness of Christianity", @"-6 - interest in Christianity", @"-5 - aware of basic facts of the gospel", @"-4 - positive attitude toward the gospel", @"-3 - awareness of personal need", @"-2 - challenge and decision to act", @"-1 -repentance of faith", @"0 - CONVERSION", @"+1 new Christian", @"+2 - growing disciple", @"+3 - ministering disciple", @"+4 - multiplying disciple", @"No Response"] resultValues:@[@NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO, @NO]];
-    filterData = @[checkListLabel1];
-    return filterData;
-}
-
-- (NSArray*)returnGuestbookArray{
+    MHFilterLabel *label1 = [[MHFilterLabel alloc] initLabelWithName:@"Faculty on Mission" uniqueId:@"0" checked:NO interactionType:CRUCellViewInteractionCheckToggle];
+    MHFilterLabel *label2 = [[MHFilterLabel alloc] initLabelWithName:@"Personal Evangelism" uniqueId:@"1" checked:NO interactionType:CRUCellViewInteractionCheckToggle];
+    MHFilterLabel *label3 = [[MHFilterLabel alloc] initLabelWithName:@"Holy Spirit Presentation" uniqueId:@"2"checked:NO interactionType:CRUCellViewInteractionCheckToggle];
+    MHFilterLabel *label4 = [[MHFilterLabel alloc] initLabelWithName:@"Comment" uniqueId:@"3" checked:NO interactionType:CRUCellViewInteractionCheckToggle];
     
-    NSString *placeHolderText =  NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_placeHolder", @"ExampleStringsFile", nil);
-    
-    MHFilterLabel *checkListLabel = [[MHFilterLabel alloc] initLabelWithName:@"What is your email address?" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel setPlaceHolderTextWithString:placeHolderText];
-    
-    MHFilterLabel *checkListLabel2 = [[MHFilterLabel alloc] initLabelWithName:@"What is your gender?" checked:NO interactionType:CRUCellViewInteractionCheckList];
-    [checkListLabel2 setResultsWithKeyArray:@[@"Female", @"Male", @"No Response"] resultValues:@[@NO, @NO, @NO]];
-    
-    MHFilterLabel *checkListLabel3 = [[MHFilterLabel alloc] initLabelWithName:@"What is your home country? Really long question making space to see how label handles the overflow what will it do I do not know will you handle it ok?" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel3 setPlaceHolderTextWithString:placeHolderText];
-    
-    MHFilterLabel *checkListLabel4 = [[MHFilterLabel alloc] initLabelWithName:@"What is your home country?" checked:NO interactionType:CRUCellViewInteractionTextBox];
-    [checkListLabel4 setPlaceHolderTextWithString:placeHolderText];
-    
-    MHFilterLabel *checkListLabel5 = [[MHFilterLabel alloc] initLabelWithName:@"How long have you been in America?" checked:NO interactionType:CRUCellViewInteractionCheckList];
-    [checkListLabel5 setResultsWithKeyArray:@[@"Less than 1 month", @"1-3 months", @"4-12 months", @"1-2 years", @"2+ years", @"No Response"] resultValues:@[@NO, @NO, @NO, @NO, @NO, @NO]];
-    
-    MHFilterLabel *checkListLabel6 = [[MHFilterLabel alloc] initLabelWithName:@"Would you like to receive email updates from Bridges@UCF about fun and social events?" checked:NO interactionType:CRUCellViewInteractionCheckList];
-    [checkListLabel6 setResultsWithKeyArray:@[@"Yes", @"No", @"No Response"] resultValues:@[@NO, @NO, @NO]];
-    
-    MHFilterLabel *checkListLabel7 = [[MHFilterLabel alloc] initLabelWithName:@"Would you like to be matched with an American friend to practice English or get to know American culture?" checked:NO interactionType:CRUCellViewInteractionCheckList];
-    [checkListLabel7 setResultsWithKeyArray:@[@"Yes", @"No", @"No Response"] resultValues:@[@NO, @NO, @NO]];
-    
-    MHFilterLabel *checkListLabel8 = [[MHFilterLabel alloc] initLabelWithName:@"Would you like to find out more about the Bible and Jesus Christ?" checked:NO interactionType:CRUCellViewInteractionCheckList];
-    [checkListLabel8 setResultsWithKeyArray:@[@"Yes", @"No", @"No Response"] resultValues:@[@NO, @NO, @NO]];
-    
-    NSArray* filterData = @[checkListLabel,checkListLabel2, checkListLabel3, checkListLabel4, checkListLabel5, checkListLabel6, checkListLabel7, checkListLabel8];
-    checkListLabel = nil;
-    checkListLabel2 = nil;
-    checkListLabel3 = nil;
-    checkListLabel4 = nil;
-    checkListLabel5 = nil;
-    checkListLabel6 = nil;
-    checkListLabel7 = nil;
-    checkListLabel8 = nil;
-    return filterData;
-}
-- (NSArray*)returnAssignedToArray{
-    
-    NSArray* filterData = @[[[MHFilterLabel alloc] initLabelWithName:@"Jan" checked:NO interactionType:CRUCellViewInteractionCheckToggle],[[MHFilterLabel alloc] initLabelWithName:@"Sue" checked:NO interactionType:CRUCellViewInteractionCheckToggle] , [[MHFilterLabel alloc] initLabelWithName:@"Andy" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Peggy" checked:NO interactionType:CRUCellViewInteractionCheckToggle]];
-    return filterData;
-}
-
-- (NSArray*)returnInteractionsArray{
-    
-    NSArray* filterData = @[[[MHFilterLabel alloc] initLabelWithName:@"Comment Only" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Spiritual Conversation" checked:NO interactionType:CRUCellViewInteractionCheckToggle],[[MHFilterLabel alloc] initLabelWithName:@"Personal Evangelism" checked:NO interactionType:CRUCellViewInteractionCheckToggle] , [[MHFilterLabel alloc] initLabelWithName:@"Personal Evangelism Decisions" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Holy Spirit Presentation" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Graduating on a Mission" checked:NO interactionType:CRUCellViewInteractionCheckToggle], [[MHFilterLabel alloc] initLabelWithName:@"Faculty on Mission" checked:NO interactionType:CRUCellViewInteractionCheckToggle]];
-    return filterData;
+    return @[label1, label2, label3, label4];
 }
 
 - (void)buttonTapped:(UIBarButtonItem *)sender{
     
     [super buttonTapped:sender];
     
-    if(!self.isModalCurrentlyShown && [sender.title isEqualToString:@"Save"]){
+    NSString *saveString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultSave", self.currentStringFileName, nil);
+
+    if(!self.isModalCurrentlyShown && [sender.title isEqualToString:saveString]){
         
+        NSArray *filters = self.combinedFilter;
+        [self printFilterWithArray:filters];
         [self dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (void)printFilterWithArray:(NSArray*)filterArray{
+    
+    [filterArray enumerateObjectsUsingBlock:^(MHPackagedFilter *filter, NSUInteger index, BOOL *stop){
+        
+        NSLog(@"FilterId:%@ FilterName:%@", filter.filterId, filter.filterName);
+        
+        NSLog(@"Filter Key:%@ Filter Value:%@", filter.returnKey, filter.returnValue);
+        
+        for(int keyvalue=0; keyvalue < filter.numberOfRows; keyvalue++){
+            
+            NSLog(@"Index: %d Key:%@ Value:%@", keyvalue, [filter returnKeyAtIndex:keyvalue], [filter returnValueAtIndex:keyvalue]);
+        }
+        
+        
+    }];
 }
 /*
 #pragma mark - Navigation
