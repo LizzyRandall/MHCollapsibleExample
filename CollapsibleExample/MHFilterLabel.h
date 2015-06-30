@@ -12,7 +12,10 @@
 
 @interface MHFilterLabel : NSObject
 
-- (instancetype)initLabelWithName:(NSString*)name checked:(BOOL)checked interactionType:(CRUCellViewInteractionType)type;
+- (instancetype)initLabelWithName:(NSString*)name
+                         uniqueId:(NSString*)uniqueId
+                          checked:(BOOL)checked
+                  interactionType:(CRUCellViewInteractionType)type;
 
 #pragma Label Information
 
@@ -23,6 +26,8 @@
 - (NSString*)labelName;
 
 - (CRUCellViewInteractionType)labelType;
+
+- (NSString*)labelId;
 
 - (NSUInteger)numOfRows;
 

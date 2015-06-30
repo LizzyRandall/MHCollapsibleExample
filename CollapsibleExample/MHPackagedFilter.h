@@ -16,11 +16,17 @@
 
 - (instancetype)initWithRootKey:(NSString*)rootKey rootValue:(NSString*)rootValue hierarchy:(BOOL)hierarchy;
 
+- (void)setuniqueIdWithId:(NSString*)uniqueId name:(NSString*)name;
+
 - (void)addFilterWithKey:(NSString*)key value:(NSString*)value;
 
 - (NSString*)returnValueAtIndex:(NSUInteger)index;
 
 - (NSString*)returnKeyAtIndex:(NSUInteger)index;
+
+- (NSString*)filterId;
+- (NSString*)filterName;
+- (NSUInteger)numberOfRows;
 
 - (BOOL)containsFilterKeyValues;
 

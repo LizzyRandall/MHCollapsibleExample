@@ -24,9 +24,9 @@
 @property (nonatomic, strong) NSMutableArray *combinedFilters;
 @property (nonatomic) NSUInteger managerCount;
 @property (nonatomic) UIColor *modalBackgroundColor;
+@property (nonatomic, strong) NSString *stringsFileName;
 
 //Modal interaction methods
-- (void)createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
 - (void)resignFirstResponderWithClearOption:(BOOL)clear;
 
 //Modal settings
@@ -39,8 +39,10 @@
 - (void)clearChangesForCurrentSection;
 
 //Creating pieces for modals
-- (UILabel*)createLabelWithSection:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size;
-- (UITextField*)createTextFieldWithSection:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition;
+- (void)setLabelSettingsWithLabel:(UILabel*)label section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size;
+- (void)setTextFieldSettingsWithField: (UITextField*)textField section:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition;
+
+- (NSUInteger)yPositionForTextFieldBasedOnLabel:(UILabel*)label;
 
 //Tableview delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
@@ -58,17 +60,19 @@
     self.managerArray = [[NSMutableArray alloc] init];
     self.managerCount = 0;
     [self setModalBackgroundColorWithColor:self.tableView.backgroundColor];
+    self.stringsFileName = @"MHCollapsibleManagerStrings";
 }
 
 #pragma Manager Data
 
 - (void)addFilterManagerWithFilters:(NSArray*)filters
                        headerTitles:(NSArray*)headerTitles
+                          headerIds:(NSArray*)headerIds
                    singleIdentifier:(NSString*)singleIdentifier
                    pluralIdentifier:(NSString*)pluralIdentifier{
     
     MHCollapsibleViewManager *simpleManager = [[MHCollapsibleViewManager alloc] initManagerWithAnimation:UITableViewRowAnimationMiddle];
-    [simpleManager setFiltersWithFilterNames:filters headerTitles:headerTitles];
+    [simpleManager setFiltersWithFilterNames:filters headerTitles:headerTitles headerIds:headerIds];
     [simpleManager setTextIdentifierAndIndexWithSingleIdentifier:singleIdentifier pluralIdentifier:pluralIdentifier managerIndex:self.managerCount];
     simpleManager.delegate = self;
     self.managerCount++;
@@ -91,19 +95,9 @@
     self.modalBackgroundColor = modalBackgroundColor;
 }
 
-- (MHCollapsibleViewManager*)getManagerAtIndex:(NSUInteger)index{
+- (void)setStringsFileNameWithName:(NSString*)name{
     
-    return self.managerArray[index];
-}
-
-- (MHCollapsibleSection*)getCurrentCollapsibleSection{
-    
-    return self.currentSection;
-}
-
-- (NSUInteger)currentManagerIndex{
-    
-    return self.managerCount;
+    self.stringsFileName = name;
 }
 
 #pragma  Button Interaction for Modals
@@ -111,7 +105,10 @@
 //While the save and cancel checked here are on the filterviewcontroller itself
 - (IBAction)buttonTapped:(UIBarButtonItem*)sender{
     
-    if([sender.title isEqualToString: @"Clear"]){
+    NSString *cancelString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultCancel", self.stringsFileName, nil);
+    NSString *clearString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultClear", self.stringsFileName, nil);
+    
+    if([sender.title isEqualToString: clearString]){
         
         if(self.modalCurrentlyShown){
             //clear just shown on modal, the temp storage
@@ -129,24 +126,7 @@
             [self.tableView reloadData];
         }
     }
-    else if ([sender.title isEqualToString: @"Save"] && !self.modalCurrentlyShown){
-        
-        //Loop through the managers and get a MHPackagedFilter for each
-        //these are concatonated. MHPackagedFilter contains key/value pairs and can have a hierarchy
-        //depending if the manager had to create multiple sections
-        [self.managerArray enumerateObjectsUsingBlock:^(MHCollapsibleViewManager *manager, NSUInteger index, BOOL *stop){
-            NSMutableArray *filter = manager.returnPackagedFilter;
-            if(filter != nil){
-                [self.combinedFilters addObjectsFromArray:filter];
-            }
-        }];
-        
-        //Now the data is stored in an array of MHPackagedFilters, with key/value pairs
-        //They can be parsed and packaged to whatever API needs to be called
-        //For a subclass, just call super on this class and then handle the combinedFilters array accordingly
-        
-    }
-    else if([sender.title isEqualToString:@"Cancel"] && !self.modalCurrentlyShown){
+    else if([sender.title isEqualToString:cancelString] && !self.modalCurrentlyShown){
         
         //dismiss modal, nothing needs to be sent to the search view controller or wherever the filter gets sent
         self.presentedViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
@@ -154,14 +134,34 @@
     }
 }
 
+- (NSArray*)combinedFilter{
+    
+    NSMutableArray *combinedFilter = [[NSMutableArray alloc] init];
+    //Loop through the managers and get a MHPackagedFilter for each
+    //these are concatonated. MHPackagedFilter contains key/value pairs and can have a hierarchy
+    //depending if the manager had to create multiple sections
+    [self.managerArray enumerateObjectsUsingBlock:^(MHCollapsibleViewManager *manager, NSUInteger index, BOOL *stop){
+        NSMutableArray *filter = manager.returnPackagedFilter;
+        if(filter != nil){
+            [combinedFilter addObjectsFromArray:filter];
+        }
+    }];
+    return combinedFilter;
+}
+
 - (BOOL)isModalCurrentlyShown{
     
     return self.modalCurrentlyShown;
 }
 
+- (NSString*)currentStringFileName{
+    
+    return self.stringsFileName;
+}
+
 #pragma Manager Delegate
 //Handles creation of modal or pretend half modal that shows the type of uiview applicable
-- (void)createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath{
+- (void)selectedCellWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath{
     
     self.currentSection = section;
     self.currentModalType = cellType;
@@ -172,13 +172,17 @@
     [self.tableView setBounces:NO];
     self.tableView.scrollEnabled = NO;
     
+    NSString *saveString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultSave", self.stringsFileName, nil);
+    NSString *cancelString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultCancel", self.stringsFileName, nil);
+    NSString *clearString = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_Button_defaultClear", self.stringsFileName, nil);
+    
     //Not all will need these buttons but most will have them in common
-    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithTitle:@"Save"
+    UIBarButtonItem *save = [[UIBarButtonItem alloc] initWithTitle:saveString
                                                             style:UIBarButtonItemStylePlain target:self action:@selector(saveChangesForCurrentSection)];
-    UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+    UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:cancelString
                                                                style:UIBarButtonItemStylePlain target:self action:@selector(cancelChangesForCurrentSection)];
     
-    UIBarButtonItem *clear = [[UIBarButtonItem alloc] initWithTitle:@"Clear"
+    UIBarButtonItem *clear = [[UIBarButtonItem alloc] initWithTitle:clearString
                                                                style:UIBarButtonItemStylePlain target:self action:@selector(clearChangesForCurrentSection)];
     
     switch (cellType) {
@@ -202,9 +206,8 @@
             
             navigationController = nil;
             tableViewController = nil;
-            
-        }
             break;
+        }
             
         case CRUCellViewInteractionPicker:{
             
@@ -225,15 +228,18 @@
 
             navigationController = nil;
             pickerViewController = nil;
-        }
             break;
+        }
             
         case CRUCellViewInteractionTextBox:{
             
-            UILabel *descriptionText = [self createLabelWithSection:section rowPath:rowPath cgSize:self.view.frame.size];
-            NSUInteger yPositionForTextField = descriptionText.frame.size.height + descriptionText.frame.origin.y + 10;
+            UILabel *descriptionText = [[UILabel alloc] init];
+            [self setLabelSettingsWithLabel:descriptionText section:section rowPath:rowPath cgSize:self.view.frame.size];
+            
+            NSUInteger yPositionForTextField = [self yPositionForTextFieldBasedOnLabel:descriptionText];
             //the textfield should be below the label, no matter how big the label is and 10 above is for padding
-            UITextField *textField = [self createTextFieldWithSection:section cgSize:self.view.frame.size yPosition:yPositionForTextField];
+            UITextField *textField = [[UITextField alloc]init];
+            [self setTextFieldSettingsWithField:textField section:section cgSize:self.view.frame.size yPosition:yPositionForTextField];
             textField.backgroundColor = [UIColor whiteColor];
             
             UIViewController *textAreaController = [[UIViewController alloc] init];
@@ -246,8 +252,12 @@
             navigationController.toolbarHidden = NO;
             [self presentViewController:navigationController animated:YES completion:nil];
             
+            //Notification is for half modals to orientate properly if device is rotated during the modal being shown
+            [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification  object:nil];
+            
             navigationController = nil;
             textAreaController = nil;
+            break;
         }
             
         default:
@@ -280,35 +290,32 @@
 
 //Creates a UILabel for the actual label selected since the modal could cover up that selection
 //and the user doesn't have to remember which one they selected this way
-- (UILabel*)createLabelWithSection:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size{
+- (void)setLabelSettingsWithLabel:(UILabel*)label section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath cgSize:(CGSize)size{
     
     NSUInteger height = size.height;
     NSUInteger width = size.width;
     
     NSString *labelText = [section returnLabelNameAtRow:rowPath.row];
-    //default rect
-   CGRect labelFrame = CGRectMake(width/25, height/7, width-width/15, height/10);
+   CGRect labelFrame = CGRectMake(width/22, height/6, width-width/15, height/10);
     
-    UILabel *descriptionText = [[UILabel alloc] initWithFrame:labelFrame];
-    descriptionText.text = labelText;
-    descriptionText.font = [UIFont boldSystemFontOfSize:16];
-    descriptionText.textColor = [UIColor blackColor];
-    descriptionText.numberOfLines = 0;
-    descriptionText.adjustsFontSizeToFitWidth = YES;
-    descriptionText.minimumScaleFactor = 8.0;
-    descriptionText.lineBreakMode = NSLineBreakByWordWrapping;
-    [descriptionText sizeToFit];
-    
-    return descriptionText;
+    label.text = labelText;
+    label.frame = labelFrame;
+    label.font = [UIFont systemFontOfSize:16];
+    label.textColor = [UIColor blackColor];
+    label.numberOfLines = 0;
+    label.adjustsFontSizeToFitWidth = YES;
+    label.minimumScaleFactor = 8.0;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    [label sizeToFit];
 }
 
+
 //Creates a textfield for the user to enter their filter label
-- (UITextField*)createTextFieldWithSection:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition{
+- (void)setTextFieldSettingsWithField: (UITextField*)textField section:(MHCollapsibleSection*)section cgSize:(CGSize)size yPosition:(NSUInteger)yPosition{
     
     NSUInteger height = size.height;
     NSUInteger width = size.width;
     
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(width/25, yPosition, width - width/15, height/15)];
     NSString *previousText = section.getTextForTextArea;
     
     if([previousText isEqualToString:@""] || previousText == nil){
@@ -318,6 +325,7 @@
         textField.text = previousText;
     }
     
+    textField.frame = CGRectMake(width/22, yPosition, width - width/15, height/15);
     textField.borderStyle = UITextBorderStyleLine;
     textField.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     textField.delegate = section;
@@ -325,10 +333,14 @@
     textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     textField.keyboardType = UIKeyboardAppearanceDefault;
     //important to give responder
-    [textField canBecomeFirstResponder];
-    return textField;
+    [textField becomeFirstResponder];
 }
 
+
+- (NSUInteger)yPositionForTextFieldBasedOnLabel:(UILabel*)label{
+    
+    return label.frame.size.height + label.frame.origin.y + 10;
+}
 //Saves the changes made by the user and handles refreshing
 //so the user can see the results on the filter label of what they selected
 - (void)saveChangesForCurrentSection{
@@ -339,6 +351,7 @@
     if(self.currentModalType == CRUCellViewInteractionTextBox){
         
         [self resignFirstResponderWithClearOption:NO];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     
     //section keeps changes
@@ -367,6 +380,8 @@
     if(self.currentModalType == CRUCellViewInteractionTextBox){
         
         [self resignFirstResponderWithClearOption:NO];
+        //remove observing for device orientation
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     
     [self.currentSection cancelChanges];
@@ -440,6 +455,38 @@
         }
     }];
     
+}
+
+//The orientation changing is handled by the tableviewcontroller modal but for the uiviewcontroller
+//with the text field/label, the text field and label need to adjust to the rotation
+//so the sub views are traversed and the label settings are reset
+- (void)orientationChanged:(NSNotification *)notification{
+    
+    if(self.modalCurrentlyShown && self.currentModalType == CRUCellViewInteractionTextBox){
+        
+        UINavigationController *navigationController = (UINavigationController*)self.presentedViewController;
+        UIViewController *textFieldController = navigationController.topViewController;
+        
+        __block NSUInteger yPositionBasedOnLabelLocation = 0;
+        
+        [textFieldController.view.subviews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger index, BOOL *stop){
+            
+            if([view isKindOfClass:[UILabel class]]){
+                
+                UILabel *label = (UILabel*)view;
+                
+                [self setLabelSettingsWithLabel:label section: self.currentSection rowPath:self.currentRowPath cgSize:navigationController.view.frame.size];
+                yPositionBasedOnLabelLocation = [self yPositionForTextFieldBasedOnLabel:label];
+                
+            }
+            else if([view isKindOfClass:[UITextField class]]){
+                
+                UITextField *textField = (UITextField*)view;
+                [self setTextFieldSettingsWithField:textField section:self.currentSection cgSize:navigationController.view.frame.size yPosition:yPositionBasedOnLabelLocation];
+            }
+          
+        }];
+    }
 }
 
 - (void)didReceiveMemoryWarning

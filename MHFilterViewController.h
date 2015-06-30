@@ -13,13 +13,19 @@
 
 - (void)buttonTapped:(UIBarButtonItem *)sender;
 
+//Output of implemented "saving" the filter
+//Returns array of MHPackagedFilters
+- (NSArray*)combinedFilter;
+
 //filters can be an array of arrays (if hierarchy collapsing)
 //headerTitles is an array of strings for those collapsing sections (non hierarchy or hierarchy)
+//headerIds is an array of unique ids (can just be unique per manager)
 //single/plural Identifier should be a string in a Localizeable strings file
 //this represents the entity getting selected, etc. so # selected labels, items, etc.
 //if one is not provided the default is items
 - (void)addFilterManagerWithFilters:(NSArray*)filters
                        headerTitles:(NSArray*)headerTitles
+                          headerIds:(NSArray*)headerIds
                    singleIdentifier:(NSString*)singleIdentifier
                    pluralIdentifier:(NSString*)pluralIdentifier;
 
@@ -35,11 +41,14 @@
 
 - (BOOL)isModalCurrentlyShown;
 
+//To make modals consistent in background color
 - (void)setModalBackgroundColorWithColor:(UIColor *)modalBackgroundColor;
 
 //Advanced methods to customize and rework code
 //only for use based on extensive knowledge of class
-- (MHCollapsibleViewManager*)getManagerAtIndex:(NSUInteger)index;
-- (MHCollapsibleSection*)getCurrentCollapsibleSection;
+- (void)selectedCellWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection *)section rowPath:(NSIndexPath *)rowPath;
+- (void)setStringsFileNameWithName:(NSString*)name;
+- (NSString*)currentStringFileName;
+
 
 @end

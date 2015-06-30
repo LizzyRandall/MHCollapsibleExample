@@ -12,8 +12,10 @@
 
 @property (strong, nonatomic) NSArray *filterDataForSection;
 @property (strong, nonatomic) NSString *headerTitle;
+@property (strong, nonatomic) NSString *stringId;
 @property (strong, nonatomic) NSString *pluralIdentifier;
 @property (strong, nonatomic) NSString *singleIdentifier;
+@property (strong, nonatomic) NSString *stringFileName;
 @property (nonatomic) BOOL expanded;
 //This range is key to keep track where to insert/delete
 //it changes depending on sections around it expanding/collapsing
@@ -37,16 +39,21 @@
 static const NSUInteger numOfSectionsForChecklist = 1;
 
 #pragma Initialize Section
-- (instancetype)initWithArray:(NSArray*)filters headerTitle:(NSString*)headerTitle
-                     animation:(UITableViewRowAnimation)animation rowRange:(NSRange)rowRange{
+- (instancetype)initWithArray:(NSArray*)filters
+                  headerTitle:(NSString*)headerTitle
+                     headerId:(NSString*)headerId
+                    animation:(UITableViewRowAnimation)animation
+                     rowRange:(NSRange)rowRange{
     
     self = [self init];
     if(self){
         
         self.filterDataForSection = filters;
         self.headerTitle = headerTitle;
+        self.stringId = headerId;
         self.filterDataRange = rowRange;
         self.expanded = NO;
+        self.stringFileName = @"MHCollapsibleManagerStrings";
     }
     return self;
 }
@@ -84,6 +91,11 @@ static const NSUInteger numOfSectionsForChecklist = 1;
         }
     }
     
+}
+
+- (void)setStringFileNameWith:(NSString *)stringFileName{
+    
+    self.stringFileName = stringFileName;
 }
 
 #pragma Section Information
@@ -127,16 +139,14 @@ static const NSUInteger numOfSectionsForChecklist = 1;
     return self.headerTitle;
 }
 
+- (NSString*)headerId{
+    
+    return self.stringId;
+}
+
 - (NSString*)getIdentifier{
     
-    NSString *identifier;
-    if(self.selectedCountForSubTitleText > 1){
-        identifier = self.pluralIdentifier;
-    }
-    else{
-        identifier = self.singleIdentifier;
-    }
-    return identifier;
+    return self.selectedCountForSubTitleText > 1 ? self.pluralIdentifier : self.singleIdentifier;
 }
 
 - (void)toggleExpanded{
@@ -200,18 +210,18 @@ static const NSUInteger numOfSectionsForChecklist = 1;
     NSString *itemTitle = self.getIdentifier;
     
     if(itemTitle == nil){
-        itemTitle = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_defaultText_single", @"Localizable", nil);
+        itemTitle = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_CellHeader_defaultText_single", self.stringFileName, nil);
     }
     
     if(count < 1){
         count = self.itemCount;
         //plural is needed for 0 items and # of items greater than 1
         if(count == 0 || count > 1){
-            itemTitle = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_defaultText_plural", @"Localizable", nil);
+            itemTitle = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_CellHeader_defaultText_plural", self.stringFileName, nil);
         }
         //only one item, don't need plural
         else{
-            itemTitle = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_defaultText_single", @"Localizable", nil);
+            itemTitle = NSLocalizedStringFromTable(@"MHCollapsibleViewManager_Interaction_CellHeader_defaultText_single", self.stringFileName, nil);
         }
     }
     
@@ -372,7 +382,7 @@ static const NSUInteger numOfSectionsForChecklist = 1;
         MHFilterLabel *label = [self.filterDataForSection objectAtIndex:self.currentModalIndex];
         tableViewHeaderFooterView.textLabel.text = label.labelName;
         tableViewHeaderFooterView.textLabel.textColor = [UIColor blackColor];
-        tableViewHeaderFooterView.textLabel.font = [UIFont boldSystemFontOfSize:16];
+        tableViewHeaderFooterView.textLabel.font = [UIFont systemFontOfSize:16];
     }
 }
 

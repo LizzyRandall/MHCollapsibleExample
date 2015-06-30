@@ -24,7 +24,7 @@
 
 @required
 
-- (void) createModalWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath;
+- (void)selectedCellWithType:(CRUCellViewInteractionType)cellType section:(MHCollapsibleSection*)section rowPath:(NSIndexPath*)rowPath;
 
 @end
 
@@ -44,7 +44,7 @@
 //Set the data for the manager
 //This should be a mutable array of strings that the Manager then creates MHFilterLabel objects for
 //Can be used to override a manager's array of data
-- (void)setFiltersWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles;
+- (void)setFiltersWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles headerIds:(NSArray*)headerIds;
 
 //Identifier is a singleton of what are the sections, ex: label, question
 //while rootText gives the root such as survey
@@ -53,14 +53,20 @@
 //If this is not set, the manager will use the sections identifier combo above
 - (void)setTextIdentifierForManagerWithSingleIdentifier:(NSString *)singleIdentifier pluralIdentifier:(NSString*)pluralIdentifier;
 
+- (void)setStringFileNameWith:(NSString *)stringFileName;
+
 //RETURN METHODS
 
 - (MHTableViewCell*)returnCellWithIndex:(NSIndexPath*)indexPath tableView:(UITableView*)tableView;
 
 - (void)selectedRowAtIndexPath:(UITableView*)tableView indexPath:(NSIndexPath*)indexPath;
 
-//Returns an array of filters for this manager in key value pairs
-//these can be parsed to pass onto api calls or apply with predicate for search
+//Returns a mutable array of packaged filters for each filter label
+//MHPackaged Filter is made up of key value pairs with a root key value pair
+//if it's a hierarchy. The root shows what type the children expansions are
+//for example surveys and survey questions. Each question name ex: "What is your phone number?"
+//will have a value. Key value pair: Question, Answer and yes there can be exactly the same
+//for the key value pair, so the same key can exist but with different values
 - (NSMutableArray*)returnPackagedFilter;
 
 - (NSString*)title;

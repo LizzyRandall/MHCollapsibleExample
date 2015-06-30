@@ -19,9 +19,12 @@
                                             UITableViewDelegate,
                                             UITableViewDataSource>
 
-//Setters
-- (instancetype)initWithArray:(NSArray*)filters headerTitle:(NSString*)headerTitle
-                     animation:(UITableViewRowAnimation)animation rowRange:(NSRange)rowRange;
+//Initialize
+- (instancetype)initWithArray:(NSArray*)filters
+                  headerTitle:(NSString*)headerTitle
+                     headerId:(NSString*)headerId
+                    animation:(UITableViewRowAnimation)animation
+                     rowRange:(NSRange)rowRange;
 
 //A singleton idenfitier for example selected labels, surveys, etc.
 //What entities are actually selected and specifying selected text since a different language could have
@@ -36,11 +39,15 @@
 //Sets the current modal index to keep track of what the modal belongs to
 - (void)setCurrentModalIndexWithRow:(NSUInteger)row;
 
+- (void)setStringFileNameWith:(NSString *)stringFileName;
+
 #pragma Section Specifics
 
 - (NSUInteger)returnManagerIndex;
 
 - (NSUInteger)headerRowNum;
+
+- (NSString*)headerId;
 
 - (NSUInteger)numOfRows;
 
