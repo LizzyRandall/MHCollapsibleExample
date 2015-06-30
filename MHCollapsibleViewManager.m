@@ -52,12 +52,11 @@
 }
 
 //Initialize with animation, title and tableView
-- (instancetype)initManagerWithAnimation:(UITableViewRowAnimation)animation
-                       topHierarchyTitle:(NSString*) title tableView:(UITableView*)tableView{
+- (instancetype)initManagerWithAnimation:(UITableViewRowAnimation)animation {
     
     self = [self init];
     if(self){
-        self.headerTitle = title;
+        self.headerTitle = @"";
         self.hierarchy = NO;
         self.rowAnimation = animation;
         self.filterSections = [self.filterSections init];
@@ -67,58 +66,14 @@
 
 #pragma Initial Settings
 
-- (void)setFilterArraysWithFirstArrayAsHeaderTitles:(NSArray*)firstArray, ... NS_REQUIRES_NIL_TERMINATION{
+- (void)setTitleWithString:(NSString*)headerTitle{
     
-    NSArray *headerTitles = firstArray;
-    NSArray *filterArray = firstArray;
-    NSUInteger count = 0; //tells of hierarchy
-    MHCollapsibleSection *section;
-    NSUInteger filterCount =  0;
-    NSUInteger start = 1;
-    NSRange range;
-    
-    //Defaults to hierarchy, based on count that will change
-    self.hierarchy = YES;
-    self.expanded = NO;
-    
-    va_list arguments;
-    //va start makes firstArray skipped, the first argument in loop
-    //is actually the second argument, this is what is wanted
-    //since header titles is the firstArray
-    va_start(arguments, firstArray);
-
-    while((filterArray = va_arg(arguments, NSArray*))){
-        
-        filterCount = filterArray.count+1;//offset for section header row, length includes header
-        range = NSMakeRange(start, filterCount);
-        section = [MHCollapsibleSection alloc];
-        section = [section initWithArray:filterArray headerTitle:headerTitles[count] animation:self.rowAnimation rowRange:range];
-        [self.filterSections addObject:section];
-        start++;
-        count++;
-    }
-    va_end(arguments);
-    
-    //Only one array, this is not a hierarchy
-    //so the starting range needs to not be one off
-    //start is originally 1 for the manager's header
-    if(count < 2){
-        
-        start = 0;
-
-        //There should be only one section in this manager, but the loop is better to code for just in case
-        [self.filterSections enumerateObjectsUsingBlock:^(MHCollapsibleSection *loopSection, NSUInteger index, BOOL *stop){
-            [loopSection resetRangeWithNum:start];
-        }];
-        self.hierarchy = NO;
-        self.expanded = YES;
-    }
-
+    self.headerTitle = headerTitle;
 }
 
 //called after Initializing Manager
 //can take double array or single array depending if hierarchy
-- (void)setDataWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles {
+- (void)setFiltersWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles {
     
     __block NSUInteger start = 0;
     //used in loop to populate section array

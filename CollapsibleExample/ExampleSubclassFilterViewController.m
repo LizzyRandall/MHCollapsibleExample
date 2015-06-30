@@ -35,45 +35,30 @@
 
 - (void)createManagersAndPopulateData{
     
-    MHCollapsibleViewManager *labels = [[MHCollapsibleViewManager alloc] initManagerWithAnimation:UITableViewRowAnimationMiddle topHierarchyTitle:@"Labels" tableView:self.tableView];
     
-    [labels setFilterArraysWithFirstArrayAsHeaderTitles:@[@"Labels"], self.returnLabelArray, nil];
-    //sends double array for filternames and single array for header lines
-    //[labels setDataWithFilterNames:self.returnLabelArray headerTitles:@[@"Labels"]];
+    NSString *label = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"Localizable", nil);
+    NSString *labels = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"Localizable", nil);
+    [self addFilterManagerWithFilters:self.returnLabelArray headerTitles:@[@"Labels"] singleIdentifier:label pluralIdentifier:labels];
     
-    MHCollapsibleViewManager *surveys = [[MHCollapsibleViewManager alloc] initManagerWithAnimation:UITableViewRowAnimationMiddle topHierarchyTitle:@"Surveys" tableView:self.tableView];
+    NSString *surveyQuestion = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_single", @"Localizable", nil);
+    NSString *surveyQuestions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_plural", @"Localizable", nil);
     
-    NSArray *surveyQuestions = @[self.returnGuestbookArray, self.returnEngelsScaleArray, self.returnInternationalStudentsArray];
-    NSArray *surveyList = @[@"Bridges@UCF Guestbook", @"Engels Scale", @"International Students"];
-    [surveys setFilterArraysWithFirstArrayAsHeaderTitles:surveyList, self.returnGuestbookArray, self.returnEngelsScaleArray, self.returnInternationalStudentsArray, nil];
-    surveyList = nil;
-    surveyQuestions = nil;
+    NSString *survey = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_single", @"Localizable", nil);
+    NSString *surveys = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_plural", @"Localizable", nil);
     
-    MHCollapsibleViewManager *interactions = [[MHCollapsibleViewManager alloc] initManagerWithAnimation:UITableViewRowAnimationMiddle topHierarchyTitle:@"Interactions" tableView:self.tableView];
-    //Index 0 is title
-    [interactions setFilterArraysWithFirstArrayAsHeaderTitles:@[@"Interactions"], self.returnInteractionsArray, nil];
-    //[interactions setDataWithFilterNames:@[self.returnInteractionsArray] headerTitles:@[@"Interactions"]];
+    [self addFilterManagerWithFilters:@[self.returnGuestbookArray, self.returnEngelsScaleArray, self.returnInternationalStudentsArray]
+                         headerTitles:@[@"Bridges@UCF Guestbook", @"Engels Scale", @"International Students"]
+                     singleIdentifier:surveyQuestion
+                     pluralIdentifier:surveyQuestions];
     
-    //do not do plural, just singleton
-    //this identifies uniquely what the filters are
-    [labels setTextIdentifierAndIndexWithSingleIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_single", @"Localizable", nil)
-                                         pluralIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_label_plural", @"Localizable", nil) managerIndex:0];
-    [surveys setTextIdentifierAndIndexWithSingleIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_single", @"Localizable", nil)
-                                          pluralIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_question_plural", @"Localizable", nil)
-                                              managerIndex:1];
-    [surveys setTextIdentifierForManagerWithSingleIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_single", @"Localizable", nil)
-                                            pluralIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_survey_plural", @"Localizable", nil)];
-    [interactions setTextIdentifierAndIndexWithSingleIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_single", @"Localizable", nil)
-                                               pluralIdentifier: NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_plural", @"Localizable", nil) managerIndex:2];
+    [self setCurrentManagerSettingsWithTopHierarchyTitle:@"Surveys" rootSingleIdentifier:survey rootPluralIdentifier:surveys];
+
+
+    NSString *interaction = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_single", @"Localizable", nil);
+    NSString *interactions = NSLocalizedStringFromTable(@"MHFilterViewController_Interaction_CellHeader_interaction_plural", @"Localizable", nil);
     
-    //ManagerArray stores each controller or manager
-    labels.delegate = self;
-    surveys.delegate = self;
-    interactions.delegate = self;
-    self.managerArray = [NSMutableArray arrayWithObjects:labels, surveys, interactions, nil];
-    
-    surveys = nil;
-    labels = nil;
+    [self addFilterManagerWithFilters:self.returnInteractionsArray headerTitles:@[@"Interactions"] singleIdentifier:interaction pluralIdentifier:interactions];
+
 }
 
 //simply populates data since it's more complicated now
@@ -140,7 +125,7 @@
     MHFilterLabel *checkListLabel2 = [[MHFilterLabel alloc] initLabelWithName:@"What is your gender?" checked:NO interactionType:CRUCellViewInteractionCheckList];
     [checkListLabel2 setResultsWithKeyArray:@[@"Female", @"Male", @"No Response"] resultValues:@[@NO, @NO, @NO]];
     
-    MHFilterLabel *checkListLabel3 = [[MHFilterLabel alloc] initLabelWithName:@"What is your home country?" checked:NO interactionType:CRUCellViewInteractionTextBox];
+    MHFilterLabel *checkListLabel3 = [[MHFilterLabel alloc] initLabelWithName:@"What is your home country? Really long question making space to see how label handles the overflow what will it do I do not know will you handle it ok?" checked:NO interactionType:CRUCellViewInteractionTextBox];
     [checkListLabel3 setPlaceHolderTextWithString:placeHolderText];
     
     MHFilterLabel *checkListLabel4 = [[MHFilterLabel alloc] initLabelWithName:@"What is your home country?" checked:NO interactionType:CRUCellViewInteractionTextBox];
@@ -185,7 +170,7 @@
     
     [super buttonTapped:sender];
     
-    if(!self.modalCurrentlyShown && [sender.title isEqualToString:@"Save"]){
+    if(!self.isModalCurrentlyShown && [sender.title isEqualToString:@"Save"]){
         
         [self dismissViewControllerAnimated:YES completion:nil];
     }

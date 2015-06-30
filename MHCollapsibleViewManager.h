@@ -36,17 +36,15 @@
 
 -(instancetype)init;
 
-//Initialize Manager with animation type, title for header and tableView
-//tableView is for creating cells to store styles, it is not kept in memory on manager
-- (instancetype)initManagerWithAnimation:(UITableViewRowAnimation)animation
-                       topHierarchyTitle:(NSString*) title tableView:(UITableView*)tableView;
+//Initialize Manager with animation type
+- (instancetype)initManagerWithAnimation:(UITableViewRowAnimation)animation;
 
 //SET METHODS
 
 //Set the data for the manager
 //This should be a mutable array of strings that the Manager then creates MHFilterLabel objects for
 //Can be used to override a manager's array of data
-- (void)setDataWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles;
+- (void)setFiltersWithFilterNames:(NSArray*)filterNames headerTitles:(NSArray*)headerTitles;
 
 //Identifier is a singleton of what are the sections, ex: label, question
 //while rootText gives the root such as survey
@@ -54,8 +52,6 @@
 
 //If this is not set, the manager will use the sections identifier combo above
 - (void)setTextIdentifierForManagerWithSingleIdentifier:(NSString *)singleIdentifier pluralIdentifier:(NSString*)pluralIdentifier;
-
-- (void)setFilterArraysWithFirstArrayAsHeaderTitles:(NSArray*)firstArray, ... NS_REQUIRES_NIL_TERMINATION;
 
 //RETURN METHODS
 
@@ -75,6 +71,8 @@
 
 //changes based on if manager expanded
 - (NSUInteger)numOfSections;
+
+- (void)setTitleWithString:(NSString*)headerTitle;
 
 //clears and "saves" (not as filter but not in temp results)
 - (void)clearAllData;
